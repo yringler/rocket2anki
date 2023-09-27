@@ -20,7 +20,7 @@ const mediaPath = 'audio';
 const deckPath = 'decks';
 const language = 'spanish';
 const seperator = '|';
-const skipDownload = true;
+const skipDownload = false;
 const finishedModules = 2;
 
 mkdirSync(mediaPath, { recursive: true });
@@ -104,10 +104,11 @@ async function addLesson(lesson: LessonEntity, meta: DashboardLesson): Promise<L
 
         if (phrase.audio_url) {
             const url = new URL(phrase.audio_url);
-            fileName = url.pathname.split('/').slice(-1)[0];
+            fileName = slugify(decodeURIComponent(url.pathname.split('/').slice(-1)[0]));
 
             if (!skipDownload) {
-                const audio = await retry(`Fetching audio: ${phrase.audio_url}`, async() => await (await (await fetch(phrase.audio_url)).blob()).arrayBuffer());
+                const audio_url = phrase.audio_url;
+                const audio = await retry(`Fetching audio: ${audio_url}`, async() => await (await (await fetch(audio_url)).blob()).arrayBuffer());
                 if (audio) {
                     writeFileSync(join('./audio', fileName), Buffer.from(audio));
                 }
@@ -141,11 +142,11 @@ async function addLesson(lesson: LessonEntity, meta: DashboardLesson): Promise<L
     }
 }
 
-function slugify(text)
+function slugify(text: string)
 {
   return text.toString().toLowerCase()
     .replace(/\s+/g, '-')           // Replace spaces with -
-    .replace(/[^\w\-]+/g, '')       // Remove all non-word chars
+    .replace(/[^\w\-.]+/g, '')       // Remove all non-word chars (allow periods - needed for extensions, and we use this for filenames)
     .replace(/\-\-+/g, '-')         // Replace multiple - with single -
     .replace(/^-+/, '')             // Trim - from start of text
     .replace(/-+$/, '');            // Trim - from end of text
