@@ -12,7 +12,7 @@ export interface Phrase {
 }
 
 export interface LessonEntity {
-    phrases: Phrase[]
+    phrases: Record<number, Phrase>
 }
 
 export interface LessonRoot {

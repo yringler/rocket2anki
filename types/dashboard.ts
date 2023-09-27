@@ -1,5 +1,7 @@
 export enum LessonGroupType { interactive = "interactive-audio-course", language = "language-and-culture" }
 
+export enum LessonType { Class = 1, Culture = 2,  SurvivalKit = 3 }
+
 export interface LessonGroup {
     code: LessonGroupType
     lessons: number[]
@@ -18,12 +20,14 @@ export interface Dashboard {
 
 export interface DashboardLesson {
     id: number
+    module_id: number
+    lesson_type_id: LessonType
     name: string
     slug: string
 }
 
 export interface DashboardEntity {
-    lessons: DashboardLesson[]
+    lessons: Record<number, DashboardLesson>
 }
 
 export interface DashboardRoot {

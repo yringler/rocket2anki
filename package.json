@@ -4,7 +4,6 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
-    "@paperclipsapp/anki-apkg-export": "^5.0.0",
     "node-fetch": "^3.3.2"
   },
   "devDependencies": {
