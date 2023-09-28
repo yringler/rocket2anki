@@ -63,7 +63,7 @@ function convertToList<T>(data: Record<number, T>) {
     })
 })();
 
-function getCompletedModules(amountCompleted: number, lessons: LessonCards[]): LessonCards[] {
+function getOrderedModuleIds(lessons: LessonCards[]) {
     const orderedModuleIds = lessons.map(lesson => lesson.meta.module_id);
 
     let unique = new Array<number>();
@@ -73,15 +73,21 @@ function getCompletedModules(amountCompleted: number, lessons: LessonCards[]): L
         }
     })
 
-    const completedModules = unique.slice(0, amountCompleted);
+    return unique;
+}
+
+function getCompletedModules(amountCompleted: number, lessons: LessonCards[]): LessonCards[] {
+    const completedModules = getOrderedModuleIds(lessons).slice(0, amountCompleted);
 
     return lessons.filter(lesson => completedModules.includes(lesson.meta.module_id))
 }
 
 function getDeck(lessons: LessonCards[], deckName: string): DeckConfig {
+    const completedModules = getOrderedModuleIds(lessons);
+
     const cardsWithDeck = lessons.flatMap(({cards, meta}) => cards.map(card => {
         const subdeckName = [meta.slug, slugify(meta.name)].join('-');
-        return `${card}${seperator}${language}${deckName}(parent)::${subdeckName}`;
+        return `${card}${seperator}${language}${deckName}::${completedModules.indexOf(meta.module_id)}::${subdeckName}`;
     })).join('\n')
 
     return {
