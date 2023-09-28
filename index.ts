@@ -21,7 +21,7 @@ const mediaPath = 'audio';
 const deckPath = 'decks';
 const language = 'spanish';
 const seperator = '|';
-const skipDownload = true;
+const skipDownload = !config.downloadAudio;
 const finishedModules = config.finishedModules;
 
 mkdirSync(mediaPath, { recursive: true });
