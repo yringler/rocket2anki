@@ -20,7 +20,7 @@ const mediaPath = 'audio';
 const deckPath = 'decks';
 const language = 'spanish';
 const seperator = '|';
-const skipDownload = false;
+const skipDownload = true;
 const finishedModules = 2;
 
 mkdirSync(mediaPath, { recursive: true });
@@ -79,7 +79,10 @@ function getCompletedModules(amountCompleted: number, lessons: LessonCards[]): L
 }
 
 function getDeck(lessons: LessonCards[], deckName: string): DeckConfig {
-    const cardsWithDeck = lessons.flatMap(lesson => lesson.cards.map(card => `${card}${seperator}${language}${deckName}`)).join('\n')
+    const cardsWithDeck = lessons.flatMap(({cards, meta}) => cards.map(card => {
+        const subdeckName = [meta.slug, slugify(meta.name)].join('-');
+        return `${card}${seperator}${language}${deckName}(parent)::${subdeckName}`;
+    })).join('\n')
 
     return {
         lessons,
@@ -89,13 +92,12 @@ function getDeck(lessons: LessonCards[], deckName: string): DeckConfig {
 }
 
 function writeSelection(deck: DeckConfig) {
-    const header = '#separator:Pipe\n#html:true\n#tags column: 3\n#deck column: 4\n'
+    const header = '#separator:Pipe\n#html:true\n#tags column: 4\n#deck column: 3\n'
     writeFileSync(join(deckPath, `${deck.deckName}.txt`), header + deck.cardsWithDeck);
 }
 
 async function addLesson(lesson: LessonEntity, meta: DashboardLesson): Promise<LessonCards> {
     const phrases = convertToList(lesson.phrases);
-    const tags = [meta.slug, slugify(meta.name)].join('-');
 
     const cardPromises = phrases.flatMap(async (phrase) => {
         const english = phrase.strings.find(english => english.writing_system_id == WritingSystemId.english)!;
@@ -136,7 +138,7 @@ async function addLesson(lesson: LessonEntity, meta: DashboardLesson): Promise<L
     return {
         cards: cards.map(card => {
             const sound = card!.audio ? `[sound:${card!.audio}]` : '';
-            return `${card!.english}${seperator}${card!.spanish}${sound}${seperator}${tags}`;
+            return `${card!.english}${seperator}${card!.spanish}${sound}${seperator}`;
         }),
         meta
     }
