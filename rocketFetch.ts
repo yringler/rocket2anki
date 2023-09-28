@@ -1,5 +1,5 @@
 import config from './config.json';
-import { Dashboard, DashboardRoot, LessonRoot } from './types';
+import { DashboardRoot, LessonRoot } from './types';
 
 export function rocketFetchHome(): Promise<DashboardRoot | undefined> {
     return rocketFetchUrl('dashboard?timezone=America%2FNew_York&api_version=2');
@@ -9,6 +9,7 @@ export function rocketFetchLesson(id: number): Promise<LessonRoot | undefined> {
     return rocketFetchUrl(`lesson/${id}`)
 }
 
+/** Retry a failed action (HTTP request) a bunch of times. Without this I was getting a bunch of timeouts. */
 export async function retry<T>(message: string, action: () => T): Promise<T | undefined> {
   let errorMessage: any;
   let i = 0;
@@ -29,8 +30,9 @@ export async function retry<T>(message: string, action: () => T): Promise<T | un
 }
 
 async function rocketFetchUrl<T>(path: string): Promise<T | undefined> {
+  // Most of these headers probably aren't needed. I just copied and pasted the fetch command from google chrome dev tools.
   return await retry(`rocketFetch: ${path}`, async () => {
-    const response = await fetch(`https://app.rocketlanguages.com/api/v2/product/1/${path}`, {
+    const response = await fetch(`https://app.rocketlanguages.com/api/v2/product/${config.productId}/${path}`, {
       "headers": {
         "accept": "application/json, text/plain, */*",
         "accept-language": "en-US,en;q=0.9",

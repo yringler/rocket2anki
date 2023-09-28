@@ -1,0 +1,9 @@
+{
+    "finishedModules": 3,
+    "downloadAudio": false,
+    "productId": 1,
+    "language": "spanish",
+    "bearer": "The bearer header (security).",
+    "xsrf": "another header. I think this is needed? IDK",
+    "cookie": "Ok, this probably isn't needed, but I threw this in anyway."
+}
