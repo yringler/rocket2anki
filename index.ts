@@ -21,7 +21,7 @@ const deckPath = 'decks';
 const language = 'spanish';
 const seperator = '|';
 const skipDownload = true;
-const finishedModules = 2;
+const finishedModules = 3;
 
 mkdirSync(mediaPath, { recursive: true });
 mkdirSync(deckPath, { recursive: true });
@@ -50,11 +50,17 @@ function convertToList<T>(data: Record<number, T>) {
         )
     )
 
-    const allLessons = getDeck((await Promise.all(promises)).filter(x => x) as LessonCards[], 'all');
+    const moduleIdToNumberMap = new Map(dashboard.modules.map(module => [module.id, module.number]));
 
-    const survivalKit = getDeck(allLessons.lessons.filter(lesson => lesson.meta.lesson_type_id == LessonType.SurvivalKit), 'survival_kit')
-    const withoutSurvival = getDeck(allLessons.lessons.filter(lesson => lesson.meta.lesson_type_id != LessonType.SurvivalKit), 'lessons')
-    const completed = getDeck(getCompletedModules(finishedModules, withoutSurvival.lessons), 'completed')
+    const allLessons = getDeck((await Promise.all(promises)).filter(x => x) as LessonCards[], 'all', moduleIdToNumberMap);
+
+    const survivalKit = getDeck(allLessons.lessons.filter(lesson => lesson.meta.lesson_type_id == LessonType.SurvivalKit), 'survival_kit', moduleIdToNumberMap)
+    const withoutSurvival = getDeck(allLessons.lessons.filter(lesson => lesson.meta.lesson_type_id != LessonType.SurvivalKit), 'lessons', moduleIdToNumberMap)
+
+    const orderedModuleIds = [...moduleIdToNumberMap.entries()]
+        .sort(([, number1], [, number2]) => number1 - number2)
+        .map(([id]) => id);
+    const completed = getDeck(getCompletedModules(finishedModules, withoutSurvival.lessons, orderedModuleIds), 'completed', moduleIdToNumberMap)
 
     writeSelection({
         deckName: 'all',
@@ -63,31 +69,17 @@ function convertToList<T>(data: Record<number, T>) {
     })
 })();
 
-function getOrderedModuleIds(lessons: LessonCards[]) {
-    const orderedModuleIds = lessons.map(lesson => lesson.meta.module_id);
-
-    let unique = new Array<number>();
-    orderedModuleIds.forEach(id => {
-        if (!unique.includes(id)) {
-            unique.push(id)
-        }
-    })
-
-    return unique;
-}
-
-function getCompletedModules(amountCompleted: number, lessons: LessonCards[]): LessonCards[] {
-    const completedModules = getOrderedModuleIds(lessons).slice(0, amountCompleted);
+function getCompletedModules(amountCompleted: number, lessons: LessonCards[], orderedModuleIds: number[]): LessonCards[] {
+    const completedModules = orderedModuleIds.slice(0, amountCompleted);
 
     return lessons.filter(lesson => completedModules.includes(lesson.meta.module_id))
 }
 
-function getDeck(lessons: LessonCards[], deckName: string): DeckConfig {
-    const completedModules = getOrderedModuleIds(lessons);
+function getDeck(lessons: LessonCards[], deckName: string, moduleIdToNumber: Map<number, number>): DeckConfig {
 
     const cardsWithDeck = lessons.flatMap(({cards, meta}) => cards.map(card => {
         const subdeckName = [meta.slug, slugify(meta.name)].join('-');
-        return `${card}${seperator}${language}${deckName}::${completedModules.indexOf(meta.module_id)}::${subdeckName}`;
+        return `${card}${seperator}${language}${deckName}::${moduleIdToNumber.get(meta.module_id)}::${subdeckName}`;
     })).join('\n')
 
     return {
