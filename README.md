@@ -1,8 +1,8 @@
 # Rocket -> anki import file
 
 ## Overview
-This is a quick little node script I threw together to create anki decks for rocket. It isn't easy to use unless you
-happen to be a web developer.
+This is a quick little node script I threw together to create anki decks for rocket. It also uses the rocket audio for all vocabulary. Note that it isn't easy to use unless you happen to be a web developer. It also isn't particularly well written;
+I kinda just slapped it together.
 
 You get a deck file, which has a bunch of decks inside it
 1. All lessons except survival kit
@@ -27,7 +27,8 @@ to get them from the network inspector for the API requests.
 3. Open anki, and import the generated decks from `decks/allLANGUAGE.txt`
 
 ## Limitations
-This script is not able to download content you didn't pay for. (Yes, I checked. Purely for research purposes.) I mean, you can probably figure something out, but that's probably a federal crime.
+1. This script is not able to download content you didn't pay for. (Yes, I checked. Purely for research purposes.) I mean, you can probably figure something out, but that's probably a federal crime.
+2. It can only download one language level at a time. For example, to download the whole rocket spanish, you'd have to run it 3 times, once for each level.
 
 [anki home]: https://apps.ankiweb.net/
 [spanish dashboard]: https://app.rocketlanguages.com/members/products/1/dashboard
