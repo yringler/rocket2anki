@@ -4,6 +4,7 @@ import { DashboardLesson, LessonEntity, LessonType, WritingSystemId } from "./ty
 import { join } from 'node:path';
 
 import { writeFileSync, mkdirSync } from 'node:fs';
+import config from './config.json';
 
 interface LessonCards {
     cards: string[]
@@ -21,7 +22,7 @@ const deckPath = 'decks';
 const language = 'spanish';
 const seperator = '|';
 const skipDownload = true;
-const finishedModules = 3;
+const finishedModules = config.finishedModules;
 
 mkdirSync(mediaPath, { recursive: true });
 mkdirSync(deckPath, { recursive: true });
