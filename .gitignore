@@ -4,3 +4,4 @@ audio
 decks
 *.js
 log
+config.json
