@@ -92,7 +92,7 @@ function getDeck(lessons: LessonCards[], deckName: string): DeckConfig {
 }
 
 function writeSelection(deck: DeckConfig) {
-    const header = '#separator:Pipe\n#html:true\n#tags column: 4\n#deck column: 3\n'
+    const header = '#separator:Pipe\n#html:true\n#deck column: 3\n'
     writeFileSync(join(deckPath, `${deck.deckName}.txt`), header + deck.cardsWithDeck);
 }
 
@@ -138,7 +138,7 @@ async function addLesson(lesson: LessonEntity, meta: DashboardLesson): Promise<L
     return {
         cards: cards.map(card => {
             const sound = card!.audio ? `[sound:${card!.audio}]` : '';
-            return `${card!.english}${seperator}${card!.spanish}${sound}${seperator}`;
+            return `${card!.english}${seperator}${card!.spanish}${sound}`;
         }),
         meta
     }
