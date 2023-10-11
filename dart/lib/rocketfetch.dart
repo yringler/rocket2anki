@@ -37,8 +37,8 @@ Future<T?> rocketFetchUrl<T>(
   final response = await retry('rocketFetch: $path', () async {
     final httpClient = HttpClient();
     final request = await httpClient.getUrl(
-      Uri.https('app.rocketlanguages.com',
-          '/api/v2/product/${config.productId}/$path'),
+      Uri.parse(
+          'https://app.rocketlanguages.com/api/v2/product/${config.productId}/$path'),
     );
 
     request.headers.add('accept', 'application/json, text/plain, */*');
