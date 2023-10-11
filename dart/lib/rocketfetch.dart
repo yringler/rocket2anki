@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:async';
 import 'dart:io';
 
+import 'package:dart/config.dart';
 import 'package:dart/dashboard.dart';
 import 'package:dart/lesson.dart';
 
@@ -35,12 +36,12 @@ Future<T?> rocketFetchUrl<T>(String path) async {
     final httpClient = HttpClient();
     final request = await httpClient.getUrl(
       Uri.https('app.rocketlanguages.com',
-          '/api/v2/product/${config['productId']}/$path'),
+          '/api/v2/product/${config.productId}/$path'),
     );
 
     request.headers.add('accept', 'application/json, text/plain, */*');
     request.headers.add('accept-language', 'en-US,en;q=0.9');
-    request.headers.add('authorization', 'Bearer ${config['bearer']}');
+    request.headers.add('authorization', 'Bearer ${config.bearer}');
     request.headers.add('cache-control', 'no-cache');
     request.headers.add('pragma', 'no-cache');
     request.headers.add('sec-ch-ua',
@@ -50,8 +51,8 @@ Future<T?> rocketFetchUrl<T>(String path) async {
     request.headers.add('sec-fetch-dest', 'empty');
     request.headers.add('sec-fetch-mode', 'cors');
     request.headers.add('sec-fetch-site', 'same-origin');
-    request.headers.add('x-xsrf-token', config['xsrf']);
-    request.headers.add('cookie', config['cookie']);
+    request.headers.add('x-xsrf-token', config.xsrf);
+    request.headers.add('cookie', config.cookie);
     request.headers.add('Referer',
         'https://app.rocketlanguages.com/members/products/1/lesson/5454');
     request.headers.add('Referrer-Policy', 'strict-origin-when-cross-origin');
