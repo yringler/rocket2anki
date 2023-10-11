@@ -7,11 +7,12 @@ import 'package:dart/dashboard.dart';
 import 'package:dart/lesson.dart';
 
 Future<DashboardRoot?> rocketFetchHome() {
-  return rocketFetchUrl('dashboard?timezone=America%2FNew_York&api_version=2');
+  return rocketFetchUrl('dashboard?timezone=America%2FNew_York&api_version=2',
+      DashboardRoot.fromJson);
 }
 
 Future<LessonRoot?> rocketFetchLesson(int id) {
-  return rocketFetchUrl('lesson/$id');
+  return rocketFetchUrl('lesson/$id', LessonRoot.fromJson);
 }
 
 Future<T?> retry<T>(String message, Future<T> Function() action) async {
@@ -31,7 +32,8 @@ Future<T?> retry<T>(String message, Future<T> Function() action) async {
   return null;
 }
 
-Future<T?> rocketFetchUrl<T>(String path) async {
+Future<T?> rocketFetchUrl<T>(
+    String path, T Function(Map<String, dynamic>) fromJson) async {
   final response = await retry('rocketFetch: $path', () async {
     final httpClient = HttpClient();
     final request = await httpClient.getUrl(
@@ -60,7 +62,7 @@ Future<T?> rocketFetchUrl<T>(String path) async {
     final httpClientResponse = await request.close();
     final responseBody =
         await httpClientResponse.transform(utf8.decoder).join();
-    return json.decode(responseBody) as T;
+    return fromJson(json.decode(responseBody));
   });
 
   return response;
