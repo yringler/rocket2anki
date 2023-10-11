@@ -39,7 +39,7 @@ class LessonGroup {
 class CourseModule {
   final int id;
   final int courseId;
-  final int number;
+  final double number;
   final List<LessonGroup> groupedLessons;
 
   CourseModule(this.id, this.courseId, this.number, this.groupedLessons);

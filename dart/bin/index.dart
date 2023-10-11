@@ -74,7 +74,7 @@ Future<void> main() async {
     }
   }
 
-  var moduleIdToNumberMap = Map<int, int>.fromEntries(
+  var moduleIdToNumberMap = Map<int, double>.fromEntries(
       dashboard.modules.map((module) => MapEntry(module.id, module.number)));
   var allLessons = getDeck(
       promises.map((lesson) => lesson as LessonCards).toList(),
@@ -93,7 +93,7 @@ Future<void> main() async {
       'lessons',
       moduleIdToNumberMap);
   var orderedModuleIds = ([...moduleIdToNumberMap.entries]
-        ..sort((a, b) => a.value - b.value))
+        ..sort((a, b) => a.value.compareTo(b.value)))
       .map((entry) => entry.key)
       .toList();
 
@@ -123,7 +123,7 @@ List<LessonCards> getCompletedModules(int amountCompleted,
 }
 
 DeckConfig getDeck(List<LessonCards> lessons, String deckName,
-    Map<int, int> moduleIdToNumber) {
+    Map<int, double> moduleIdToNumber) {
   var cardsWithDeck = lessons.expand((lesson) {
     return lesson.cards.map((card) {
       var subdeckName = [lesson.meta.slug, slugify(lesson.meta.name)].join('-');
@@ -156,14 +156,15 @@ Future<LessonCards?> addLesson(
     if (phrase.audioUrl.isNotEmpty) {
       var url = Uri.parse(phrase.audioUrl);
       fileName = slugify(Uri.decodeComponent(url.pathSegments.last));
-      if (!skipDownload) {
-        var audioUrl = phrase.audioUrl;
-        var audio = await retry('Fetching audio: $audioUrl', () async {
-          var response = await http.get(Uri.parse(audioUrl));
-          return response.bodyBytes;
-        });
-        if (audio != null) {
-          File(join(['./audio', fileName])).writeAsBytesSync(audio);
+      var audioUrl = phrase.audioUrl;
+      var audio = await retry('Fetching audio: $audioUrl', () async {
+        var response = await http.get(Uri.parse(audioUrl));
+        return response.bodyBytes;
+      });
+      if (audio != null) {
+        final audioFile = File(join(['./audio', fileName]));
+        if (!audioFile.existsSync()) {
+          audioFile.writeAsBytesSync(audio);
         }
       }
     }
