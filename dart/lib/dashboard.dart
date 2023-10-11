@@ -3,14 +3,20 @@ import 'package:json_annotation/json_annotation.dart';
 part 'dashboard.g.dart';
 
 @JsonEnum(valueField: 'value')
-enum LessonGroupType {
-  interactive("interactive-audio-course"),
-  language("language-and-culture"),
-  survivalKit("survival-kit");
+enum LessonGroupType implements Comparable<LessonGroupType> {
+  interactive("interactive-audio-course", 1),
+  language("language-and-culture", 2),
+  survivalKit("survival-kit", 3);
 
-  const LessonGroupType(this.value);
+  const LessonGroupType(this.value, this.sort);
 
   final String value;
+  final int sort;
+
+  @override
+  int compareTo(LessonGroupType other) {
+    return sort.compareTo(other.sort);
+  }
 }
 
 @JsonEnum(valueField: 'value')
@@ -42,7 +48,16 @@ class CourseModule {
   final double number;
   final List<LessonGroup> groupedLessons;
 
-  CourseModule(this.id, this.courseId, this.number, this.groupedLessons);
+  late List<int> _orderedLessons;
+
+  int numberOfLesson(int lessonId) => _orderedLessons.indexOf(lessonId);
+
+  CourseModule(this.id, this.courseId, this.number, this.groupedLessons) {
+    groupedLessons.sort((a, b) => a.code.compareTo(b.code));
+    _orderedLessons =
+        groupedLessons.expand((element) => element.lessons).toList();
+  }
+
   factory CourseModule.fromJson(Map<String, dynamic> json) =>
       _$CourseModuleFromJson(json);
 }
