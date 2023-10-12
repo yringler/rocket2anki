@@ -44,17 +44,18 @@ Future<void> main(List<String> args) async {
 
   assert(products != null);
 
-  final decks = await Future.wait(products!.userCourses
-      .map((course) => course.productLevels
-          .where((element) => !element.isTrial)
-          .map((level) =>
-              getDecksForProduct(auth, course: course, level: level)))
-      .expand((x) => x)
+  final decks = (await Future.wait(products!.userCourses
+          .map((course) => course.productLevels
+              .where((element) => !element.isTrial)
+              .map((level) =>
+                  getDecksForProduct(auth, course: course, level: level)))
+          .expand((x) => x)
+          .toList()))
       .whereNotNull()
-      .toList());
+      .toList();
 
   for (var deck in decks) {
-    writeSelection(deck!);
+    writeSelection(deck);
   }
 }
 

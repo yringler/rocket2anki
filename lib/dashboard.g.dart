@@ -16,6 +16,8 @@ const _$LessonGroupTypeEnumMap = {
   LessonGroupType.language: 'language-and-culture',
   LessonGroupType.survivalKit: 'survival-kit',
   LessonGroupType.writing: 'writing',
+  LessonGroupType.travelogue: 'travelogue',
+  LessonGroupType.ebook: 'ebook-chapter',
 };
 
 CourseModule _$CourseModuleFromJson(Map<String, dynamic> json) => CourseModule(
