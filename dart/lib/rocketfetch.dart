@@ -46,18 +46,7 @@ Future<T?> rocketFetchUrl<T>(
     request.headers.add('authorization', 'Bearer ${config.bearer}');
     request.headers.add('cache-control', 'no-cache');
     request.headers.add('pragma', 'no-cache');
-    request.headers.add('sec-ch-ua',
-        '"Google Chrome";v="117", "Not;A=Brand";v="8", "Chromium";v="117"');
-    request.headers.add('sec-ch-ua-mobile', '?0');
-    request.headers.add('sec-ch-ua-platform', '"Windows"');
-    request.headers.add('sec-fetch-dest', 'empty');
-    request.headers.add('sec-fetch-mode', 'cors');
-    request.headers.add('sec-fetch-site', 'same-origin');
-    request.headers.add('x-xsrf-token', config.xsrf);
-    request.headers.add('cookie', config.cookie);
-    request.headers.add('Referer',
-        'https://app.rocketlanguages.com/members/products/1/lesson/5454');
-    request.headers.add('Referrer-Policy', 'strict-origin-when-cross-origin');
+    // request.headers.add('x-xsrf-token', config.xsrf);
 
     final httpClientResponse = await request.close();
     final responseBody =
