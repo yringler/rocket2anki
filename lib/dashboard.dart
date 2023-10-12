@@ -24,7 +24,8 @@ enum LessonGroupType implements Comparable<LessonGroupType> {
 enum LessonType {
   language(1, 'Audio Lessons'),
   culture(2, 'Language & Culture'),
-  survivalKit(3, 'Survival Kit');
+  survivalKit(3, 'Survival Kit'),
+  writing(6, "Writing");
 
   const LessonType(this.value, this.name);
 
