@@ -50,14 +50,15 @@ Future<void> main(List<String> args) async {
           .map((level) =>
               getDecksForProduct(auth, course: course, level: level)))
       .expand((x) => x)
+      .whereNotNull()
       .toList());
 
   for (var deck in decks) {
-    writeSelection(deck);
+    writeSelection(deck!);
   }
 }
 
-Future<DeckConfig> getDecksForProduct(String auth,
+Future<DeckConfig?> getDecksForProduct(String auth,
     {required Course course, required ProductLevel level}) async {
   final rocketFetcher = RocketFetcher(auth: auth, productId: level.productId);
 
@@ -65,7 +66,12 @@ Future<DeckConfig> getDecksForProduct(String auth,
 
   assert(rocketData != null);
 
-  var dashboard = rocketData!.dashboard;
+  var dashboard = rocketData?.dashboard;
+
+  if (dashboard == null) {
+    print('No product: ${course.fullName}');
+    return null;
+  }
 
   final fullLessonsData = (await Future.wait(dashboard.modules
           .expand((module) => module.groupedLessons)
