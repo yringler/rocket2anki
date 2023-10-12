@@ -105,7 +105,7 @@ DeckConfig getDeck(List<FlashCardDeck> lessons, String deckName) {
 }
 
 void writeSelection(DeckConfig deck) {
-  var header = '#separator:Pipe\n#html:true\n#deck column: 3\n';
+  var header = '#separator:Pipe\n#html:true\n#guid column: 3\ndeck column: 4';
   File(join([deckPath, '${deck.deckName}.txt']))
       .writeAsStringSync(header + deck.cardsWithDeck);
 }
@@ -118,7 +118,7 @@ FlashCardDeck getLessonDeck(LessonEntity lesson, CourseModule module) {
       .whereType<FlashCard>()
       .map((card) {
     var sound = card.audio.isNotEmpty ? '[sound:${card.audio}' : '';
-    return '${card.primary}$separator${card.back}$sound';
+    return [card.primary, card.back + sound, card.phrase.id].join(separator);
   }).toList();
 
   return FlashCardDeck(cards, lesson.lesson, module);

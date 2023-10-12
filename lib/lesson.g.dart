@@ -25,6 +25,7 @@ Phrase _$PhraseFromJson(Map<String, dynamic> json) => Phrase(
           .map((e) => PhraseString.fromJson(e as Map<String, dynamic>))
           .toList(),
       json['literal_string'] as String?,
+      json['id'] as int,
     );
 
 LessonEntity _$LessonEntityFromJson(Map<String, dynamic> json) => LessonEntity(
