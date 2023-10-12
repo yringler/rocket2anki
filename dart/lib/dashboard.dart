@@ -89,9 +89,13 @@ class DashboardLesson {
   final LessonType lessonTypeId;
   final String name;
   final String slug;
+  final String number;
 
-  DashboardLesson(
-      this.id, this.moduleId, this.lessonTypeId, this.name, this.slug);
+  String get formattedNumber =>
+      double.parse(number).toStringAsFixed(2).padLeft(5, '0');
+
+  DashboardLesson(this.id, this.moduleId, this.lessonTypeId, this.name,
+      this.slug, this.number);
   factory DashboardLesson.fromJson(Map<String, dynamic> json) =>
       _$DashboardLessonFromJson(json);
 }

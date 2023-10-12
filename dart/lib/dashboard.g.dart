@@ -39,6 +39,7 @@ DashboardLesson _$DashboardLessonFromJson(Map<String, dynamic> json) =>
       $enumDecode(_$LessonTypeEnumMap, json['lesson_type_id']),
       json['name'] as String,
       json['slug'] as String,
+      json['number'] as String,
     );
 
 const _$LessonTypeEnumMap = {
