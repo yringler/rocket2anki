@@ -71,6 +71,12 @@ class CourseModule {
 class Dashboard {
   final List<CourseModule> modules;
 
+  CourseModule moduleForLesson(int lessonId) {
+    return modules.firstWhere((element) => element.groupedLessons
+        .where((element) => element.lessons.contains(lessonId))
+        .isNotEmpty);
+  }
+
   Dashboard(this.modules);
   factory Dashboard.fromJson(Map<String, dynamic> json) =>
       _$DashboardFromJson(json);

@@ -31,30 +31,34 @@ Future<void> main() async {
   }
 
   var dashboard = rocketData.dashboard;
-  var entities = rocketData.entities;
 
-  int? amount;
-  var lessons = convertToList(entities.lessons);
-  var promises = <Future<FlashCardDeck?>>[];
+  final fullLessonsData = (await Future.wait(dashboard.modules
+          .expand((module) => module.groupedLessons)
+          .expand((lessonGroup) => lessonGroup.lessons)
+          .map((lessonId) async {
+    final lesson = await rocketFetchLesson(lessonId);
 
-  for (var module in dashboard.modules.sublist(0, amount)) {
-    for (var lessonGroup in module.groupedLessons.sublist(0, amount)) {
-      for (var lessonId in lessonGroup.lessons.sublist(0, amount)) {
-        var response = await rocketFetchLesson(lessonId);
-
-        if (response == null) continue;
-
-        promises.add(addLesson(response.entities,
-            lessons.firstWhere((lesson) => lesson.id == lessonId), module));
-      }
+    if (lesson == null) {
+      return null;
     }
-  }
 
-  var allLessons = getDeck(
-      (await Future.wait(promises)).whereType<FlashCardDeck>().toList(),
-      config.language);
+    for (var phrase in lesson.entities.phrases.values) {
+      await phrase.downloadMedia(rootPath: './audio');
+    }
 
-  writeSelection(allLessons);
+    return lesson;
+  }).toList()))
+      .whereType<LessonRoot>()
+      .toList();
+
+  final allDecks = fullLessonsData
+      .map((e) => addLesson(e.entities,
+          rocketData.dashboard.moduleForLesson(e.entities.lesson.id)))
+      .toList();
+
+  final masterDeck = getDeck(allDecks, config.language);
+
+  writeSelection(masterDeck);
 }
 
 DeckConfig getDeck(List<FlashCardDeck> lessons, String deckName) {
@@ -74,20 +78,16 @@ void writeSelection(DeckConfig deck) {
       .writeAsStringSync(header + deck.cardsWithDeck);
 }
 
-Future<FlashCardDeck?> addLesson(
-    LessonEntity lesson, DashboardLesson meta, CourseModule module) async {
+FlashCardDeck addLesson(LessonEntity lesson, CourseModule module) {
   var phrases = convertToList(lesson.phrases);
-  var cardPromises = phrases.map((phrase) async {
-    await phrase.downloadMedia(rootPath: './audio');
-    return phrase.toCard();
-  }).toList();
-
-  var cards = (await Future.wait(cardPromises))
-      .where((card) => card != null)
+  var cards = phrases
+      .map((phrase) => phrase.toCard())
+      .toList()
+      .whereType<FlashCard>()
       .map((card) {
-    var sound = card?.audio != null ? '[sound:${card!.audio}' : '';
-    return '${card!.english}$separator${card.spanish}$sound';
+    var sound = card.audio.isNotEmpty ? '[sound:${card.audio}' : '';
+    return '${card.english}$separator${card.spanish}$sound';
   }).toList();
 
-  return FlashCardDeck(cards, meta, module);
+  return FlashCardDeck(cards, lesson.lesson, module);
 }
