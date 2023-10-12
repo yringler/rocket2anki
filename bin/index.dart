@@ -102,7 +102,7 @@ Future<DeckConfig?> getDecksForProduct(String auth,
 DeckConfig getDeck(List<FlashCardDeck> lessons, String deckName) {
   var cardsWithDeck = lessons.expand((lesson) {
     return lesson.cards.map((card) {
-      return '$card$separator$deckName::${lesson.deckName}';
+      return [card, '$deckName::${lesson.deckName}'].join(separator);
     });
   }).join('\n');
 
