@@ -47,8 +47,8 @@ Future<void> main(List<String> args) async {
   final decks = await Future.wait(products!.userCourses
       .map((course) => course.productLevels
           .where((element) => !element.isTrial)
-          .map((level) => getDecksForProduct(auth,
-              course: course, productId: level.productId)))
+          .map((level) =>
+              getDecksForProduct(auth, course: course, level: level)))
       .expand((x) => x)
       .toList());
 
@@ -58,8 +58,8 @@ Future<void> main(List<String> args) async {
 }
 
 Future<DeckConfig> getDecksForProduct(String auth,
-    {required Course course, required int productId}) async {
-  final rocketFetcher = RocketFetcher(auth: auth, productId: productId);
+    {required Course course, required ProductLevel level}) async {
+  final rocketFetcher = RocketFetcher(auth: auth, productId: level.productId);
 
   var rocketData = await rocketFetcher.rocketFetchHome();
 
@@ -90,7 +90,7 @@ Future<DeckConfig> getDecksForProduct(String auth,
           rocketData.dashboard.moduleForLesson(e.entities.lesson.id)))
       .toList();
 
-  return getDeck(allDecks, course.fullName);
+  return getDeck(allDecks, '${course.fullName} - ${level.label}');
 }
 
 DeckConfig getDeck(List<FlashCardDeck> lessons, String deckName) {
