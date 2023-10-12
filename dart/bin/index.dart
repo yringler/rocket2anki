@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:async';
 
+import 'package:collection/collection.dart';
 import 'package:dart/config.dart';
 import 'package:dart/dashboard.dart';
 import 'package:dart/flash-card.dart';
@@ -40,10 +41,15 @@ Future<void> main() async {
       .whereType<LessonRoot>()
       .toList();
 
-  await Future.wait(fullLessonsData
+  final audioDownloadBatches = fullLessonsData
       .expand((e) => e.entities.phrases.values)
-      .map((e) => e.downloadMedia(rootPath: './audio'))
-      .toList());
+      .where((element) => element.audioUrl.isNotEmpty)
+      .toList()
+      .slices(10);
+
+  for (var batch in audioDownloadBatches) {
+    await Future.wait(batch.map((e) => e.downloadMedia(rootPath: './audio')));
+  }
 
   final allDecks = fullLessonsData
       .map((e) => addLesson(e.entities,
