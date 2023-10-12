@@ -24,6 +24,8 @@ class Course {
   final String? dialect;
   final List<ProductLevel> productLevels;
 
+  String get fullName => dialect == null ? name : '$name ($dialect)';
+
   Course(this.id, this.name, this.dialect, this.productLevels);
   factory Course.fromJson(Map<String, dynamic> json) => _$CourseFromJson(json);
 }

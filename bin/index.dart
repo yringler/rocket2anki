@@ -3,7 +3,7 @@ import 'dart:async';
 
 import 'package:args/args.dart';
 import 'package:collection/collection.dart';
-import 'package:dart/config.dart';
+import 'package:dart/courses.dart';
 import 'package:dart/dashboard.dart';
 import 'package:dart/flash-card.dart';
 import 'package:dart/lesson.dart';
@@ -37,15 +37,35 @@ Future<void> main(List<String> args) async {
 
   final auth = await getAuthCode(loginInfo);
 
-  final rocketFetcher = RocketFetcher(auth: auth);
+  final products = await RocketFetcher.rocketFetchUrl(
+      'https://app.rocketlanguages.com/api/v2/courses',
+      auth,
+      AllCourses.fromJson);
+
+  assert(products != null);
+
+  final decks = await Future.wait(products!.userCourses
+      .map((course) => course.productLevels
+          .where((element) => !element.isTrial)
+          .map((level) => getDecksForProduct(auth,
+              course: course, productId: level.productId)))
+      .expand((x) => x)
+      .toList());
+
+  for (var deck in decks) {
+    writeSelection(deck);
+  }
+}
+
+Future<DeckConfig> getDecksForProduct(String auth,
+    {required Course course, required int productId}) async {
+  final rocketFetcher = RocketFetcher(auth: auth, productId: productId);
 
   var rocketData = await rocketFetcher.rocketFetchHome();
 
-  if (rocketData == null) {
-    return;
-  }
+  assert(rocketData != null);
 
-  var dashboard = rocketData.dashboard;
+  var dashboard = rocketData!.dashboard;
 
   final fullLessonsData = (await Future.wait(dashboard.modules
           .expand((module) => module.groupedLessons)
@@ -66,13 +86,11 @@ Future<void> main(List<String> args) async {
   }
 
   final allDecks = fullLessonsData
-      .map((e) => addLesson(e.entities,
+      .map((e) => getLessonDeck(e.entities,
           rocketData.dashboard.moduleForLesson(e.entities.lesson.id)))
       .toList();
 
-  final masterDeck = getDeck(allDecks, config.language);
-
-  writeSelection(masterDeck);
+  return getDeck(allDecks, course.fullName);
 }
 
 DeckConfig getDeck(List<FlashCardDeck> lessons, String deckName) {
@@ -92,7 +110,7 @@ void writeSelection(DeckConfig deck) {
       .writeAsStringSync(header + deck.cardsWithDeck);
 }
 
-FlashCardDeck addLesson(LessonEntity lesson, CourseModule module) {
+FlashCardDeck getLessonDeck(LessonEntity lesson, CourseModule module) {
   var phrases = convertToList(lesson.phrases);
   var cards = phrases
       .map((phrase) => phrase.toCard())
