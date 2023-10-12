@@ -90,7 +90,7 @@ class DashboardLesson {
   final int moduleId;
   final LessonType lessonTypeId;
   final String name;
-  final String slug;
+  final String? slug;
   final String number;
 
   String get formattedNumber =>
