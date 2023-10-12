@@ -100,7 +100,7 @@ FlashCardDeck addLesson(LessonEntity lesson, CourseModule module) {
       .whereType<FlashCard>()
       .map((card) {
     var sound = card.audio.isNotEmpty ? '[sound:${card.audio}' : '';
-    return '${card.english}$separator${card.spanish}$sound';
+    return '${card.primary}$separator${card.back}$sound';
   }).toList();
 
   return FlashCardDeck(cards, lesson.lesson, module);

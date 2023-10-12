@@ -6,7 +6,8 @@ part 'dashboard.g.dart';
 enum LessonGroupType implements Comparable<LessonGroupType> {
   interactive("interactive-audio-course", 1),
   language("language-and-culture", 2),
-  survivalKit("survival-kit", 3);
+  survivalKit("survival-kit", 3),
+  writing("writing", 4);
 
   const LessonGroupType(this.value, this.sort);
 

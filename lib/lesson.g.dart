@@ -15,6 +15,8 @@ PhraseString _$PhraseStringFromJson(Map<String, dynamic> json) => PhraseString(
 const _$WritingSystemIdEnumMap = {
   WritingSystemId.spanish: 5,
   WritingSystemId.english: 1,
+  WritingSystemId.chineseFigures: 9,
+  WritingSystemId.pinyin: 8,
 };
 
 Phrase _$PhraseFromJson(Map<String, dynamic> json) => Phrase(

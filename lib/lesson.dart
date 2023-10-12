@@ -10,12 +10,19 @@ part 'lesson.g.dart';
 
 @JsonEnum(valueField: 'value')
 enum WritingSystemId {
-  spanish(5),
-  english(1);
+  spanish(5, primary: true),
+  english(1),
+  chineseFigures(9, alwaysShow: true),
+  pinyin(8);
 
-  const WritingSystemId(this.value);
+  const WritingSystemId(this.value,
+      {this.primary = false, this.alwaysShow = false});
 
   final int value;
+  final bool primary;
+
+  /// Show on both sides of card.
+  final bool alwaysShow;
 }
 
 @JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
@@ -59,20 +66,29 @@ class Phrase {
   }
 
   FlashCard? toCard() {
-    final english = ofWritingSystem(WritingSystemId.english);
-    final spanish = ofWritingSystem(WritingSystemId.spanish);
+    final front =
+        strings.where((element) => element.writingSystemId.primary).firstOrNull;
+    final back = strings
+        .where((element) =>
+            !element.writingSystemId.primary &&
+            !element.writingSystemId.alwaysShow)
+        .firstOrNull;
+    final both = strings
+        .where((element) => element.writingSystemId.alwaysShow)
+        .firstOrNull;
 
-    if ((english?.text.isEmpty ?? true) || (spanish?.text.isEmpty ?? true)) {
+    if (front == null || back == null) {
       return null;
     }
 
     final literal = literalString ?? '';
     final englishSide =
-        literal.isEmpty ? english!.text : '${english!.text} ($literal)';
+        literal.isEmpty ? front.text : '${front.text} ($literal)';
+    final alwaysShow = both == null ? '' : ' - ${both.text}';
 
     return FlashCard(
-        english: _sanitize(englishSide),
-        spanish: _sanitize(spanish!.text),
+        primary: _sanitize(englishSide + alwaysShow),
+        back: _sanitize(back.text + alwaysShow),
         audio: audioFileName);
   }
 
