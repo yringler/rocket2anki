@@ -35,7 +35,6 @@ class RocketFetcher {
       request.headers.add('authorization', 'Bearer $auth');
       request.headers.add('cache-control', 'no-cache');
       request.headers.add('pragma', 'no-cache');
-      // request.headers.add('x-xsrf-token', config.xsrf);
 
       final httpClientResponse = await request.close();
       final responseBody =
