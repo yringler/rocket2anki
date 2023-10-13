@@ -116,7 +116,8 @@ void writeSelection(DeckConfig deck) {
     return;
   }
 
-  var header = '#separator:Pipe\n#html:true\n#guid column: 3\ndeck column: 4';
+  var header =
+      '#separator:Pipe\n#html:true\n#guid column: 3\n#deck column: 4\n';
   File(join([deckPath, '${deck.deckName}.txt']))
       .writeAsStringSync(header + deck.cardsWithDeck);
 }
