@@ -19,6 +19,7 @@ It would be nice to be able to have a single review across only modules that you
 1. Create a config.json based on the sample config, and put in your credentials. If you log in to your account, you'll be able
 to get them from the network inspector for the API requests.
 2. Note you'll have to get the product ID; I didn't bother automating that, because going through a single product takes enough time that modifying a config each time is fine. If you open up the dashboard, it's in the URL - eg, [spanish lesson one][spanish dashboard]
+4. Run `yarn` or `npm install` from the script folder
 3. Run `yarn build` from the script folder
 
 ### Using the decks
