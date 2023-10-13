@@ -22,7 +22,7 @@ See https://ankiweb.net/account/terms, under the "Intellectual Property" clause.
 So don't share any decks you create!
 
 ## Overview
-This is a quick little node script I threw together to create anki decks for rocket. It also uses the rocket audio for all vocabulary.
+This is a quick little ~~node~~ dart script I threw together to create anki decks for rocket. It also uses the rocket audio for all vocabulary.
 
 You get a deck file, which has a single deck inside it. It is subdivided into modules (and survival kit).
 So it's very easy to review a lesson, and when you know a module, to review the whole module.
