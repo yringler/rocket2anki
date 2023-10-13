@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'dart:typed_data';
+import 'package:dart/flash-card.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:dart/rocketfetch.dart';
@@ -43,10 +43,14 @@ class Phrase {
       return '';
     }
 
-    return slugify(url.pathSegments.last);
+    return slugify(url.pathSegments.lastOrNull ?? '');
   }
 
-  bool get hasAudio => audioFileName.isNotEmpty;
+  bool get _hasAudio => audioFileName.isNotEmpty;
+
+  Phrase(this.audioUrl, this.strings, this.literalString);
+
+  factory Phrase.fromJson(Map<String, dynamic> json) => _$PhraseFromJson(json);
 
   PhraseString? ofWritingSystem(WritingSystemId writingSystem) {
     return strings
@@ -54,22 +58,46 @@ class Phrase {
         .firstOrNull;
   }
 
-  Phrase(this.audioUrl, this.strings, this.literalString);
+  FlashCard? toCard() {
+    final english = ofWritingSystem(WritingSystemId.english);
+    final spanish = ofWritingSystem(WritingSystemId.spanish);
 
-  factory Phrase.fromJson(Map<String, dynamic> json) => _$PhraseFromJson(json);
+    if ((english?.text.isEmpty ?? true) || (spanish?.text.isEmpty ?? true)) {
+      return null;
+    }
+
+    return FlashCard(
+        english: _sanitize(english!.text),
+        spanish: _sanitize(spanish!.text),
+        audio: audioFileName);
+  }
 
   Future<void> downloadMedia({required String rootPath}) async {
+    if (!_hasAudio) {
+      return;
+    }
+
+    final audioFile = File(join([rootPath, audioFileName]));
+
+    if (audioFile.existsSync()) {
+      return;
+    }
+
     var audio = await retry('Fetching audio: $audioUrl', () async {
       var response = await http.get(Uri.parse(audioUrl));
       return response.bodyBytes;
     });
 
     if (audio != null) {
-      final audioFile = File(join([rootPath, audioFileName]));
       if (!audioFile.existsSync()) {
         audioFile.writeAsBytesSync(audio);
       }
     }
+  }
+
+  // We use pipe as the seperator, so if it shows up in the card, we convert it to the HTML entity.
+  static String _sanitize(String text) {
+    return text.replaceAll('|', '&vert;');
   }
 }
 
