@@ -53,6 +53,7 @@ to get them from the network inspector for the API requests.
 2. It can only download one language level at a time. For example, to download the whole rocket spanish, you'd have to run it 3 times, once for each level.
 3. It doesn't support languages with alternate alphabets, where you'd want the pronunciation along with the translation, and
 possibly the symbol (in the case of Chinese) along with both the English and the Chinese.
+4. No UI. It would be cool to port it to dart, and add an optional desktop UI.
 
 [anki home]: https://apps.ankiweb.net/
 [spanish dashboard]: https://app.rocketlanguages.com/members/products/1/dashboard
