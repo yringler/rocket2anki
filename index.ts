@@ -19,8 +19,9 @@ interface DeckConfig {
 
 const mediaPath = 'audio';
 const deckPath = 'decks';
-const language = 'spanish';
 const seperator = '|';
+// Once you have the audio, if you fiddle with the text of the cards, it's faster to run without re-downloading the audio.
+// Really we should check if the file exists.
 const skipDownload = !config.downloadAudio;
 const finishedModules = config.finishedModules;
 
@@ -64,7 +65,7 @@ function convertToList<T>(data: Record<number, T>) {
     const completed = getDeck(getCompletedModules(finishedModules, withoutSurvival.lessons, orderedModuleIds), 'completed', moduleIdToNumberMap)
 
     writeSelection({
-        deckName: `all-${language}`,
+        deckName: `all-${config.language}`,
         lessons: completed.lessons.concat(survivalKit.lessons).concat(withoutSurvival.lessons),
         cardsWithDeck: [completed.cardsWithDeck, survivalKit.cardsWithDeck, withoutSurvival.cardsWithDeck].join('\n')
     })
@@ -79,8 +80,11 @@ function getCompletedModules(amountCompleted: number, lessons: LessonCards[], or
 function getDeck(lessons: LessonCards[], deckName: string, moduleIdToNumber: Map<number, number>): DeckConfig {
 
     const cardsWithDeck = lessons.flatMap(({cards, meta}) => cards.map(card => {
+        // I use the slug because it has a number (useful for sorting).
+        // But survival kit lessons have a random slug, so I also add the name.
+        // It would be better to order everything based on the order in the lessons array, but this is good enough.
         const subdeckName = [meta.slug, slugify(meta.name)].join('-');
-        return `${card}${seperator}${language}${deckName}::${moduleIdToNumber.get(meta.module_id)}::${subdeckName}`;
+        return `${card}${seperator}${config.language}${deckName}::${moduleIdToNumber.get(meta.module_id)}::${subdeckName}`;
     })).join('\n')
 
     return {
@@ -105,6 +109,7 @@ async function addLesson(lesson: LessonEntity, meta: DashboardLesson): Promise<L
 
         if (phrase.audio_url) {
             const url = new URL(phrase.audio_url);
+            // File name is slugified to get rid of % signs and stuff. More readable, and they were breaking file matching.
             fileName = slugify(decodeURIComponent(url.pathname.split('/').slice(-1)[0]));
 
             if (!skipDownload) {
@@ -121,6 +126,7 @@ async function addLesson(lesson: LessonEntity, meta: DashboardLesson): Promise<L
             return undefined;
         }
 
+        // We use pipe as the seperator, so if it shows up in the card, we convert it to the HTML entity.
         function sanatize(text: string) {
             return text.replace('|', '&vert;');
         }
