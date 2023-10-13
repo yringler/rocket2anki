@@ -20,6 +20,7 @@ Map<String, dynamic> _$LessonGroupToJson(LessonGroup instance) =>
 const _$LessonGroupTypeEnumMap = {
   LessonGroupType.interactive: 'interactive-audio-course',
   LessonGroupType.language: 'language-and-culture',
+  LessonGroupType.survivalKit: 'survival-kit',
 };
 
 CourseModule _$CourseModuleFromJson(Map<String, dynamic> json) => CourseModule(

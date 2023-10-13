@@ -5,7 +5,8 @@ part 'dashboard.g.dart';
 @JsonEnum(valueField: 'value')
 enum LessonGroupType {
   interactive("interactive-audio-course"),
-  language("language-and-culture");
+  language("language-and-culture"),
+  survivalKit("survival-kit");
 
   const LessonGroupType(this.value);
 
