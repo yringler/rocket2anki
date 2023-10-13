@@ -10,18 +10,22 @@ export function rocketFetchLesson(id: number): Promise<LessonRoot | undefined> {
 }
 
 export async function retry<T>(message: string, action: () => T): Promise<T | undefined> {
-  for (let i = 0; i < 5; i++) {
-    await new Promise(resolve => setTimeout(resolve, 1000));
+  let errorMessage: any;
+  let i = 0;
+  for (; i < 10; i++) {
+    await new Promise(resolve => setTimeout(resolve, 5000));
 
     try {
       return await action();
     }
-    catch {
+    catch (err){
+      errorMessage = err;
     }
-
-    console.log(message);
-    return undefined;
   }
+
+  
+  console.log(i + message + errorMessage);
+  return undefined;
 }
 
 async function rocketFetchUrl<T>(path: string): Promise<T | undefined> {
