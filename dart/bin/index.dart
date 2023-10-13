@@ -35,21 +35,15 @@ Future<void> main() async {
   final fullLessonsData = (await Future.wait(dashboard.modules
           .expand((module) => module.groupedLessons)
           .expand((lessonGroup) => lessonGroup.lessons)
-          .map((lessonId) async {
-    final lesson = await rocketFetchLesson(lessonId);
-
-    if (lesson == null) {
-      return null;
-    }
-
-    for (var phrase in lesson.entities.phrases.values) {
-      await phrase.downloadMedia(rootPath: './audio');
-    }
-
-    return lesson;
-  }).toList()))
+          .map(rocketFetchLesson)
+          .toList()))
       .whereType<LessonRoot>()
       .toList();
+
+  await Future.wait(fullLessonsData
+      .expand((e) => e.entities.phrases.values)
+      .map((e) => e.downloadMedia(rootPath: './audio'))
+      .toList());
 
   final allDecks = fullLessonsData
       .map((e) => addLesson(e.entities,
