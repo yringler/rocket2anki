@@ -10,6 +10,7 @@ import 'package:dart/lesson.dart';
 import 'package:dart/login.dart';
 import 'package:dart/rocketfetch.dart';
 import 'package:dart/utils.dart';
+import 'package:interact/interact.dart';
 
 const String mediaPath = 'audio';
 const String deckPath = 'decks';
@@ -25,17 +26,33 @@ Future<void> main(List<String> args) async {
   Directory(deckPath).createSync(recursive: true);
 
   final argsParser = ArgParser()
-    ..addOption('email', abbr: 'e', mandatory: true)
-    ..addOption('password', abbr: 'p', mandatory: true);
+    ..addOption('email', abbr: 'e')
+    ..addOption('password', abbr: 'p')
+    ..addFlag('help', abbr: 'h');
 
-  final loginInfo = getLoginInfo(argsParser.parse(args));
+  final parsedArgs = argsParser.parse(args);
 
-  if (loginInfo == null) {
+  if (parsedArgs.wasParsed("help")) {
     print(argsParser.usage);
-    return;
   }
 
-  final auth = await getAuthCode(loginInfo);
+  String? auth;
+
+  while (auth == null) {
+    final loginInfo = getLoginInfo(parsedArgs);
+    auth = await getAuthCode(loginInfo);
+
+    if (auth == null) {
+      print(
+          'Please make sure to enter your correct rocket email address and password');
+    }
+  }
+
+  final spinner = Spinner(
+      icon: '🏆',
+      rightPrompt: (done) => done
+          ? 'Deck import file created and audio downloaded!'
+          : 'Please wait, downloading content').interact();
 
   final products = await RocketFetcher.rocketFetchUrl(
       'https://app.rocketlanguages.com/api/v2/courses',
@@ -48,7 +65,7 @@ Future<void> main(List<String> args) async {
           .map((course) => course.productLevels
               .where((element) => !element.isTrial)
               .map((level) =>
-                  getDecksForProduct(auth, course: course, level: level)))
+                  getDecksForProduct(auth!, course: course, level: level)))
           .expand((x) => x)
           .toList()))
       .whereNotNull()
@@ -57,6 +74,8 @@ Future<void> main(List<String> args) async {
   for (var deck in decks) {
     writeSelection(deck);
   }
+
+  spinner.done();
 }
 
 Future<DeckConfig?> getDecksForProduct(String auth,
@@ -136,15 +155,26 @@ FlashCardDeck getLessonDeck(LessonEntity lesson, CourseModule module) {
   return FlashCardDeck(cards, lesson.lesson, module);
 }
 
-LoginInfo? getLoginInfo(ArgResults parsedArgs) {
-  try {
-    final String email = parsedArgs['email'];
-    final String password = parsedArgs['password'];
+LoginInfo getLoginInfo(ArgResults parsedArgs) {
+  String? email = parsedArgs['email'];
+  String? password = parsedArgs['password'];
 
-    return LoginInfo(email: email, password: password);
-  } on ArgumentError catch (e) {
-    print(e.message);
+  if (email == null || email.isEmpty) {
+    email = Input(
+      prompt: 'Please enter the email address used for your rocket account',
+      validator: (String x) {
+        if (x.contains('@') && x.length >= 5) {
+          return true;
+        } else {
+          throw ValidationError('Not a valid email');
+        }
+      },
+    ).interact();
   }
 
-  return null;
+  if (password == null || password.isEmpty) {
+    password = Password(prompt: 'Please enter your rocket password').interact();
+  }
+
+  return LoginInfo(email: email, password: password);
 }

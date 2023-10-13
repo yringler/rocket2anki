@@ -8,7 +8,7 @@ part 'login.g.dart';
 
 @JsonSerializable(createToJson: false)
 class Login {
-  final Auth auth;
+  final Auth? auth;
 
   Login(this.auth);
 
@@ -35,11 +35,11 @@ class LoginInfo {
   toJson() => _$LoginInfoToJson(this);
 }
 
-Future<String> getAuthCode(LoginInfo loginInfo) async {
+Future<String?> getAuthCode(LoginInfo loginInfo) async {
   final response = await http.post(
       Uri.parse('https://app.rocketlanguages.com/api/v2/login'),
       body: loginInfo.toJson(),
       headers: {"Accept": "application/json"});
 
-  return Login.fromJson(json.decode(response.body)).auth.token;
+  return Login.fromJson(json.decode(response.body)).auth?.token;
 }

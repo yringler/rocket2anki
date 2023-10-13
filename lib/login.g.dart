@@ -7,7 +7,9 @@ part of 'login.dart';
 // **************************************************************************
 
 Login _$LoginFromJson(Map<String, dynamic> json) => Login(
-      Auth.fromJson(json['auth'] as Map<String, dynamic>),
+      json['auth'] == null
+          ? null
+          : Auth.fromJson(json['auth'] as Map<String, dynamic>),
     );
 
 Auth _$AuthFromJson(Map<String, dynamic> json) => Auth(
