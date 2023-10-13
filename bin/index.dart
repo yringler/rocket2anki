@@ -129,7 +129,7 @@ FlashCardDeck getLessonDeck(LessonEntity lesson, CourseModule module) {
       .toList()
       .whereType<FlashCard>()
       .map((card) {
-    var sound = card.audio.isNotEmpty ? '[sound:${card.audio}' : '';
+    var sound = card.audio.isNotEmpty ? '[sound:${card.audio}]' : '';
     return [card.primary, card.back + sound, card.phrase.id].join(separator);
   }).toList();
 
