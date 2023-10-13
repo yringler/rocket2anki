@@ -24,14 +24,14 @@ So don't share any decks you create!
 ## Overview
 This is a quick little ~~node~~ dart script I threw together to create anki decks for rocket. It also uses the rocket audio for all vocabulary.
 
-You get a deck file, which has a single deck inside it. It is subdivided into modules (and survival kit).
+You get a text file for each product you purchased, which each contain a single deck. The deck is subdivided into modules (+ survival kit).
 So it's very easy to review a lesson, and when you know a module, to review the whole module.
 
 ## Usage
 
 ### Running it
-1. Create a .env file with the product ID and the language name (I didn't bother automating this)
-2. If you can't find an exe download, run `dart pub get` from the script folder, and than `dart ./bin/index.dart -e EMAIL -p PASSWORD`
+If you can't find an exe download, run `dart pub get` from the script folder, and then `dart ./bin/index.dart -e EMAIL -p PASSWORD`.
+(You'll have to install the [dart sdk][dart sdk download page] to run dart commands.)
 
 Note you'll have to get the product ID; I didn't bother automating that, because going through a single product takes enough time that modifying a config each time is fine. If you open up the dashboard, it's in the URL - eg, [spanish lesson one][spanish dashboard]
 
@@ -42,10 +42,8 @@ Note you'll have to get the product ID; I didn't bother automating that, because
 
 ## Limitations
 1. This script is not able to download content you didn't pay for. (Yes, I checked. Purely for research purposes.) I mean, you can probably figure something out, but that's probably a federal crime.
-2. It can only download one language level at a time. For example, to download the whole rocket spanish, you'd have to run it 3 times, once for each level.
-3. It doesn't support languages with alternate alphabets, where you'd want the pronunciation along with the translation, and
-possibly the symbol (in the case of Chinese) along with both the English and the Chinese.
 4. No UI. It would be cool to port it to dart, and add an optional desktop UI.
 
 [anki home]: https://apps.ankiweb.net/
 [spanish dashboard]: https://app.rocketlanguages.com/members/products/1/dashboard
+[dart sdk download page]: https://dart.dev/get-dart
