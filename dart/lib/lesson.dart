@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:dart/dashboard.dart';
 import 'package:dart/flash-card.dart';
 import 'package:http/http.dart' as http;
 
@@ -108,8 +109,14 @@ class Phrase {
 @JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
 class LessonEntity {
   final Map<int, Phrase> phrases;
+  final Map<int, DashboardLesson> lessons;
 
-  LessonEntity(this.phrases);
+  DashboardLesson get lesson => lessons.values.single;
+
+  LessonEntity(this.phrases, this.lessons) {
+    assert(lessons.length == 1,
+        'lesson contains multiple lessons: ${lessons.values.map((e) => e.name).join('\n')}');
+  }
 
   factory LessonEntity.fromJson(Map<String, dynamic> json) =>
       _$LessonEntityFromJson(json);
