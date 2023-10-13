@@ -2,12 +2,11 @@ import 'package:dart/dashboard.dart';
 import 'package:dart/utils.dart';
 
 class FlashCard {
-  String english;
-  String spanish;
+  String primary;
+  String back;
   String audio;
 
-  FlashCard(
-      {required this.english, required this.spanish, required this.audio});
+  FlashCard({required this.primary, required this.back, required this.audio});
 }
 
 class FlashCardDeck {
