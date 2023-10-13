@@ -112,6 +112,10 @@ DeckConfig getDeck(List<FlashCardDeck> lessons, String deckName) {
 }
 
 void writeSelection(DeckConfig deck) {
+  if (deck.cardsWithDeck.isEmpty) {
+    return;
+  }
+
   var header = '#separator:Pipe\n#html:true\n#guid column: 3\ndeck column: 4';
   File(join([deckPath, '${deck.deckName}.txt']))
       .writeAsStringSync(header + deck.cardsWithDeck);
