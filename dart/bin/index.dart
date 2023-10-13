@@ -155,7 +155,7 @@ Future<LessonCards?> addLesson(
 
     if (phrase.audioUrl.isNotEmpty) {
       var url = Uri.parse(phrase.audioUrl);
-      fileName = slugify(Uri.decodeComponent(url.pathSegments.last));
+      fileName = slugify(url.pathSegments.last);
       var audioUrl = phrase.audioUrl;
       var audio = await retry('Fetching audio: $audioUrl', () async {
         var response = await http.get(Uri.parse(audioUrl));
