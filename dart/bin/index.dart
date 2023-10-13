@@ -15,8 +15,6 @@ const String mediaPath = 'audio';
 const String deckPath = 'decks';
 const String separator = '|';
 
-bool skipDownload = !config.downloadAudio;
-
 List<T> convertToList<T>(Map<int, T> data) {
   final x = data.keys.toList()..sort();
   return x.map((id) => data[id]!).toList();

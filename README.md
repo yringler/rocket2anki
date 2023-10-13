@@ -22,26 +22,19 @@ See https://ankiweb.net/account/terms, under the "Intellectual Property" clause.
 So don't share any decks you create!
 
 ## Overview
-This is a quick little node script I threw together to create anki decks for rocket. It also uses the rocket audio for all vocabulary. Note that it isn't easy to use unless you happen to be a web developer. It also isn't particularly well written;
-I kinda just slapped it together.
+This is a quick little node script I threw together to create anki decks for rocket. It also uses the rocket audio for all vocabulary.
 
-You get a deck file, which has a bunch of decks inside it
-1. All lessons except survival kit
-2. What you're up to - I added this before I added subdecks, probably not going to use it anymore
-3. All survival kit lessons
-
-Each deck has a sub decks for each module, and each sub deck has another subdeck for each lesson in the module.
+You get a deck file, which has a single deck inside it. It is subdivided into modules (and survival kit).
 So it's very easy to review a lesson, and when you know a module, to review the whole module.
-It would be nice to be able to have a single review across only modules that you finished. It looks like flags or tags would be great for that; I haven't checked yet.
 
 ## Usage
 
 ### Running it
-1. Create a config.json based on the sample config, and put in your credentials. If you log in to your account, you'll be able
-to get them from the network inspector for the API requests.
-2. Note you'll have to get the product ID; I didn't bother automating that, because going through a single product takes enough time that modifying a config each time is fine. If you open up the dashboard, it's in the URL - eg, [spanish lesson one][spanish dashboard]
+1. Create a .env file with the product ID and the language name (I didn't bother automating this)
 4. Run `yarn` or `npm install` from the script folder
 3. Run `yarn build` from the script folder
+
+Note you'll have to get the product ID; I didn't bother automating that, because going through a single product takes enough time that modifying a config each time is fine. If you open up the dashboard, it's in the URL - eg, [spanish lesson one][spanish dashboard]
 
 ### Using the decks
 1. You need to have [anki][anki home] installed on your computer. 
