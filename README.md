@@ -31,8 +31,7 @@ So it's very easy to review a lesson, and when you know a module, to review the 
 
 ### Running it
 1. Create a .env file with the product ID and the language name (I didn't bother automating this)
-4. Run `yarn` or `npm install` from the script folder
-3. Run `yarn build` from the script folder
+2. If you can't find an exe download, run `dart pub get` from the script folder, and than `dart ./bin/index.dart -e EMAIL -p PASSWORD`
 
 Note you'll have to get the product ID; I didn't bother automating that, because going through a single product takes enough time that modifying a config each time is fine. If you open up the dashboard, it's in the URL - eg, [spanish lesson one][spanish dashboard]
 
