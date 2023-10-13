@@ -17,6 +17,10 @@ const _$WritingSystemIdEnumMap = {
   WritingSystemId.english: 1,
   WritingSystemId.chineseFigures: 9,
   WritingSystemId.pinyin: 8,
+  WritingSystemId.japaneseFigures: 3,
+  WritingSystemId.japanesePinyin: 4,
+  WritingSystemId.koreanFigures: 15,
+  WritingSystemId.koreanPinyin: 16,
 };
 
 Phrase _$PhraseFromJson(Map<String, dynamic> json) => Phrase(
