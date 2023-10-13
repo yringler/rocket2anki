@@ -10,8 +10,8 @@ part 'lesson.g.dart';
 
 @JsonEnum(valueField: 'value')
 enum WritingSystemId {
-  spanish(5, primary: true),
-  english(1),
+  spanish(5),
+  english(1, primary: true),
   chineseFigures(9, alwaysShow: true),
   pinyin(8);
 
