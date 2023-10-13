@@ -25,6 +25,6 @@ Future<T?> retry<T>(String message, Future<T> Function() action) async {
     }
   }
 
-  print('$i$message$errorMessage');
+  print('$i - $message - $errorMessage');
   return null;
 }
