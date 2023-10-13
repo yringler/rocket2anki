@@ -1,12 +1,18 @@
 import 'package:dart/dashboard.dart';
+import 'package:dart/lesson.dart';
 import 'package:dart/utils.dart';
 
 class FlashCard {
   String primary;
   String back;
   String audio;
+  Phrase phrase;
 
-  FlashCard({required this.primary, required this.back, required this.audio});
+  FlashCard(
+      {required this.primary,
+      required this.back,
+      required this.audio,
+      required this.phrase});
 }
 
 class FlashCardDeck {

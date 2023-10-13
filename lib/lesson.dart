@@ -39,6 +39,7 @@ class PhraseString {
 
 @JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
 class Phrase {
+  final int id;
   final String audioUrl;
   final String? literalString;
   final List<PhraseString> strings;
@@ -55,7 +56,7 @@ class Phrase {
 
   bool get _hasAudio => audioFileName.isNotEmpty;
 
-  Phrase(this.audioUrl, this.strings, this.literalString);
+  Phrase(this.audioUrl, this.strings, this.literalString, this.id);
 
   factory Phrase.fromJson(Map<String, dynamic> json) => _$PhraseFromJson(json);
 
@@ -89,7 +90,8 @@ class Phrase {
     return FlashCard(
         primary: _sanitize(englishSide + alwaysShow),
         back: _sanitize(back.text + alwaysShow),
-        audio: audioFileName);
+        audio: audioFileName,
+        phrase: this);
   }
 
   Future<void> downloadMedia({required String rootPath}) async {
