@@ -64,7 +64,7 @@ function convertToList<T>(data: Record<number, T>) {
     const completed = getDeck(getCompletedModules(finishedModules, withoutSurvival.lessons, orderedModuleIds), 'completed', moduleIdToNumberMap)
 
     writeSelection({
-        deckName: 'all',
+        deckName: `all-${language}`,
         lessons: completed.lessons.concat(survivalKit.lessons).concat(withoutSurvival.lessons),
         cardsWithDeck: [completed.cardsWithDeck, survivalKit.cardsWithDeck, withoutSurvival.cardsWithDeck].join('\n')
     })
