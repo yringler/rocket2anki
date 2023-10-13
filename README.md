@@ -2,7 +2,7 @@
 
 ## tl;dr
 
-Rocket vocab in anki! Do you use Windows? **Download [tool here][tool windows build]**. Other systems? Keep reading.
+Rocket vocab from purchased classes in anki! Do you use Windows? **Download [tool here][tool windows build]**. Other systems? Keep reading.
 
 ## Purpose
 Rocket languages is great, but it doesn't have a review system. It's not as critical for the core class content (which
