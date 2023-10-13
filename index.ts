@@ -6,12 +6,20 @@ import { join } from 'node:path';
 import { writeFileSync, mkdirSync } from 'node:fs';
 
 interface LessonCards {
-    cards: string
+    cards: string[]
     meta: DashboardLesson
+}
+
+interface DeckConfig {
+    cardsWithDeck: string
+    lessons: LessonCards[]
+    deckName: string
 }
 
 const mediaPath = 'audio';
 const deckPath = 'decks';
+const language = 'spanish';
+const seperator = '|';
 const skipDownload = true;
 const finishedModules = 2;
 
@@ -42,16 +50,17 @@ function convertToList<T>(data: Record<number, T>) {
         )
     )
 
-    const allLessons =  (await Promise.all(promises)).filter(x => x) as LessonCards[];
-    writeSelection(allLessons, 'all');
+    const allLessons = getDeck((await Promise.all(promises)).filter(x => x) as LessonCards[], 'all');
 
-    const survivalKit = allLessons.filter(lesson => lesson.meta.lesson_type_id == LessonType.SurvivalKit);
-    const withoutSurvival = allLessons.filter(lesson => lesson.meta.lesson_type_id != LessonType.SurvivalKit);
+    const survivalKit = getDeck(allLessons.lessons.filter(lesson => lesson.meta.lesson_type_id == LessonType.SurvivalKit), 'survival_kit')
+    const withoutSurvival = getDeck(allLessons.lessons.filter(lesson => lesson.meta.lesson_type_id != LessonType.SurvivalKit), 'lessons')
+    const completed = getDeck(getCompletedModules(finishedModules, withoutSurvival.lessons), 'completed')
 
-    writeSelection(survivalKit, 'survival_kit');
-    writeSelection(withoutSurvival, 'lessons');
-
-    writeSelection(getCompletedModules(finishedModules, withoutSurvival), 'completed');
+    writeSelection({
+        deckName: 'all',
+        lessons: completed.lessons.concat(survivalKit.lessons).concat(withoutSurvival.lessons),
+        cardsWithDeck: [completed.cardsWithDeck, survivalKit.cardsWithDeck, withoutSurvival.cardsWithDeck].join('\n')
+    })
 })();
 
 function getCompletedModules(amountCompleted: number, lessons: LessonCards[]): LessonCards[] {
@@ -69,10 +78,19 @@ function getCompletedModules(amountCompleted: number, lessons: LessonCards[]): L
     return lessons.filter(lesson => completedModules.includes(lesson.meta.module_id))
 }
 
-function writeSelection(cards: LessonCards[], filename: string) {
-    const header = '#separator:Pipe\n#html:true\n#tags column: 3\n';
+function getDeck(lessons: LessonCards[], deckName: string): DeckConfig {
+    const cardsWithDeck = lessons.flatMap(lesson => lesson.cards.map(card => `${card}${seperator}${language}${deckName}`)).join('\n')
 
-    writeFileSync(join(deckPath, `${filename}.txt`), header + cards.map(card => card.cards).join('\n'));
+    return {
+        lessons,
+        cardsWithDeck,
+        deckName
+    }
+}
+
+function writeSelection(deck: DeckConfig) {
+    const header = '#separator:Pipe\n#html:true\n#tags column: 3\n#deck column: 4\n'
+    writeFileSync(join(deckPath, `${deck.deckName}.txt`), header + deck.cardsWithDeck);
 }
 
 async function addLesson(lesson: LessonEntity, meta: DashboardLesson): Promise<LessonCards> {
@@ -101,9 +119,13 @@ async function addLesson(lesson: LessonEntity, meta: DashboardLesson): Promise<L
             return undefined;
         }
 
+        function sanatize(text: string) {
+            return text.replace('|', '&vert;');
+        }
+
         return {
-            english: english.text,
-            spanish: spanish.text,
+            english: sanatize(english.text),
+            spanish: sanatize(spanish.text),
             audio: fileName
         }
     })
@@ -113,8 +135,8 @@ async function addLesson(lesson: LessonEntity, meta: DashboardLesson): Promise<L
     return {
         cards: cards.map(card => {
             const sound = card!.audio ? `[sound:${card!.audio}]` : '';
-            return `${card!.english}|${card!.spanish}${sound}|${tags}`;
-        }).join('\n'),
+            return `${card!.english}${seperator}${card!.spanish}${sound}${seperator}${tags}`;
+        }),
         meta
     }
 }
