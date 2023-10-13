@@ -10,3 +10,5 @@ decks
 *.js
 log
 config.json
+
+*.exe
