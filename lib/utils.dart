@@ -16,7 +16,7 @@ Future<T?> retry<T>(String message, Future<T> Function() action) async {
   dynamic errorMessage;
   int i = 0;
   for (; i < 10; i++) {
-    await Future.delayed(Duration(seconds: 5));
+    await Future.delayed(Duration(seconds: 3 * i));
 
     try {
       return await action();
