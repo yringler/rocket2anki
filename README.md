@@ -6,7 +6,7 @@ additional vocab in language & culture, and especially survival kit - how are yo
 keep on going back to the lessons and looking them over, or going through the flash cards again - but that means going to
 a lot of different places, and looking at a lot of things you already know cold.
 
-Anki is a very powerful spaced repitition flash card software. 
+Anki is a very powerful spaced repetition flash card software. 
 
 ## Overview
 This is a quick little node script I threw together to create anki decks for rocket. It also uses the rocket audio for all vocabulary. Note that it isn't easy to use unless you happen to be a web developer. It also isn't particularly well written;
