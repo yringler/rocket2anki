@@ -13,7 +13,11 @@ enum WritingSystemId {
   spanish(5),
   english(1, primary: true),
   chineseFigures(9, alwaysShow: true),
-  pinyin(8);
+  pinyin(8),
+  japaneseFigures(3, alwaysShow: true),
+  japanesePinyin(4),
+  koreanFigures(15, alwaysShow: true),
+  koreanPinyin(16);
 
   const WritingSystemId(this.value,
       {this.primary = false, this.alwaysShow = false});
