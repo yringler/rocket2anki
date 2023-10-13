@@ -26,7 +26,7 @@ const _$LessonGroupTypeEnumMap = {
 CourseModule _$CourseModuleFromJson(Map<String, dynamic> json) => CourseModule(
       json['id'] as int,
       json['course_id'] as int,
-      json['number'] as int,
+      (json['number'] as num).toDouble(),
       (json['grouped_lessons'] as List<dynamic>)
           .map((e) => LessonGroup.fromJson(e as Map<String, dynamic>))
           .toList(),
