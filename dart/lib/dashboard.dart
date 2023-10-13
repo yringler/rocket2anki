@@ -21,13 +21,14 @@ enum LessonGroupType implements Comparable<LessonGroupType> {
 
 @JsonEnum(valueField: 'value')
 enum LessonType {
-  language(1),
-  culture(2),
-  survivalKit(3);
+  language(1, 'Audio Lessons'),
+  culture(2, 'Language & Culture'),
+  survivalKit(3, 'Survival Kit');
 
-  const LessonType(this.value);
+  const LessonType(this.value, this.name);
 
   final int value;
+  final String name;
 }
 
 @JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
@@ -51,6 +52,10 @@ class CourseModule {
   late List<int> _orderedLessons;
 
   int numberOfLesson(int lessonId) => _orderedLessons.indexOf(lessonId);
+
+  bool onlyContains(LessonGroupType code) {
+    return groupedLessons.where((element) => element.code != code).isEmpty;
+  }
 
   CourseModule(this.id, this.courseId, this.number, this.groupedLessons) {
     groupedLessons.sort((a, b) => a.code.compareTo(b.code));

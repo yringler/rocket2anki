@@ -50,8 +50,6 @@ Future<void> main() async {
     }
   }
 
-  var moduleIdToNumberMap = Map<int, double>.fromEntries(
-      dashboard.modules.map((module) => MapEntry(module.id, module.number)));
   var allLessons = getDeck(
       (await Future.wait(promises)).whereType<FlashCardDeck>().toList(), 'all');
   var survivalKit = getDeck(
@@ -64,33 +62,13 @@ Future<void> main() async {
           .where((lesson) => lesson.meta.lessonTypeId != LessonType.survivalKit)
           .toList(),
       'lessons');
-  var orderedModuleIds = ([...moduleIdToNumberMap.entries]
-        ..sort((a, b) => a.value.compareTo(b.value)))
-      .map((entry) => entry.key)
-      .toList();
-
-  var completed = getDeck(
-      getCompletedModules(
-          finishedModules, withoutSurvival.lessons, orderedModuleIds),
-      'completed');
 
   writeSelection(DeckConfig(
     deckName: 'all-${config.language}',
-    lessons: completed.lessons + survivalKit.lessons + withoutSurvival.lessons,
-    cardsWithDeck: [
-      completed.cardsWithDeck,
-      survivalKit.cardsWithDeck,
-      withoutSurvival.cardsWithDeck
-    ].join('\n'),
+    lessons: survivalKit.lessons + withoutSurvival.lessons,
+    cardsWithDeck:
+        [survivalKit.cardsWithDeck, withoutSurvival.cardsWithDeck].join('\n'),
   ));
-}
-
-List<FlashCardDeck> getCompletedModules(int amountCompleted,
-    List<FlashCardDeck> lessons, List<int> orderedModuleIds) {
-  var completedModules = orderedModuleIds.sublist(0, amountCompleted);
-  return lessons
-      .where((lesson) => completedModules.contains(lesson.meta.moduleId))
-      .toList();
 }
 
 DeckConfig getDeck(List<FlashCardDeck> lessons, String deckName) {
