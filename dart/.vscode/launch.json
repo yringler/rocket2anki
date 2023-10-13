@@ -8,7 +8,20 @@
             "name": "dart",
             "request": "launch",
             "type": "dart",
-            "program": "bin/index.dart"
+            "program": "bin/index.dart",
+            "args": ["-e", "${input:email}", "-p", "${input:password}"],
+        }
+    ],
+    "inputs": [
+        {
+            "id": "email",
+            "type": "promptString",
+            "description": "Email address of active rocket account"
+        },
+        {
+            "id": "password",
+            "type": "promptString",
+            "description": "Password to rocket account"
         }
     ]
 }
