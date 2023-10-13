@@ -1,5 +1,9 @@
 # Rocket -> anki import file
 
+## tl;dr
+
+Rocket vocab in anki! Windows? **Download [tool here][tool windows build]**. Other systems? Keep reading.
+
 ## Purpose
 Rocket languages is great, but it doesn't have a review system. It's not as critical for the core class content (which
 I find I remember anyway), but for additional vocab in language & culture, and especially survival kit - how are you
@@ -30,7 +34,7 @@ So it's very easy to review a lesson, and when you know a module, to review the 
 ## Usage
 
 ### Running it
-If you're on windows, you can download an exe from [github](https://github.com/yringler/rocket2anki/releases/latest).
+If you're on windows, you can download an exe from [github][tool windows build].
 Run it with `rocket2anki.exe -e EMAIL -p PASSWORD`
 
 If you don't pass in a correct email and password, the script will prompt you for your username and password.
@@ -52,3 +56,4 @@ See [the anki import docs][anki import]
 [anki home]: https://apps.ankiweb.net/
 [dart sdk download page]: https://dart.dev/get-dart
 [anki import]: https://docs.ankiweb.net/importing/text-files.html#importing-media
+[tool windows build]: https://github.com/yringler/rocket2anki/releases/latest
