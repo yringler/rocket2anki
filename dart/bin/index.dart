@@ -14,7 +14,6 @@ const String deckPath = 'decks';
 const String separator = '|';
 
 bool skipDownload = !config.downloadAudio;
-var finishedModules = config.finishedModules;
 
 List<T> convertToList<T>(Map<int, T> data) {
   final x = data.keys.toList()..sort();
