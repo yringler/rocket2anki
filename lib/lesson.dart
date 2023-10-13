@@ -71,13 +71,16 @@ class Phrase {
   }
 
   FlashCard? toCard() {
-    final front =
-        strings.where((element) => element.writingSystemId.primary).firstOrNull;
+    final front = strings
+        .where((element) => element.writingSystemId.primary)
+        .firstOrNull
+        ?.text;
     final back = strings
         .where((element) =>
             !element.writingSystemId.primary &&
             !element.writingSystemId.alwaysShow)
-        .firstOrNull;
+        .firstOrNull
+        ?.text;
     final both = strings
         .where((element) => element.writingSystemId.alwaysShow)
         .firstOrNull;
@@ -87,13 +90,12 @@ class Phrase {
     }
 
     final literal = literalString ?? '';
-    final englishSide =
-        literal.isEmpty ? front.text : '${front.text} ($literal)';
+    final englishSide = literal.isEmpty ? front : '$front ($literal)';
     final alwaysShow = both == null ? '' : ' - ${both.text}';
 
     return FlashCard(
         primary: _sanitize(englishSide + alwaysShow),
-        back: _sanitize(back.text + alwaysShow),
+        back: _sanitize(back + alwaysShow),
         audio: audioFileName,
         phrase: this);
   }
