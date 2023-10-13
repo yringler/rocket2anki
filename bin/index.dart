@@ -92,8 +92,8 @@ Future<DeckConfig?> getDecksForProduct(String auth,
   }
 
   final allDecks = fullLessonsData
-      .map((e) => getLessonDeck(e.entities,
-          rocketData.dashboard.moduleForLesson(e.entities.lesson.id)))
+      .map((e) => getLessonDeck(
+          e.entities, dashboard.moduleForLesson(e.entities.lesson.id)))
       .toList();
 
   return getDeck(allDecks, '${course.fullName} - ${level.label}');
