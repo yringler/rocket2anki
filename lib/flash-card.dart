@@ -30,7 +30,7 @@ class FlashCardDeck {
   }
 
   String _getTopName(String moduleNumber) {
-    // Add survivol kit to the surivival kit module (but not to the sample survival kit in the first module).
+    // Add survival kit to the survival kit module (but not to the sample survival kit in the first module).
     if (meta.lessonTypeId == LessonType.survivalKit &&
         module.onlyContains(LessonGroupType.survivalKit)) {
       return '$moduleNumber-${meta.lessonTypeId.name}';
