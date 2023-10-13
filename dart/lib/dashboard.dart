@@ -1,6 +1,21 @@
-enum LessonGroupType { interactive, language }
+enum LessonGroupType {
+  interactive("interactive-audio-course"),
+  language("language-and-culture");
 
-enum LessonType { Class, Culture, SurvivalKit }
+  const LessonGroupType(this.value);
+
+  final String value;
+}
+
+enum LessonType {
+  language(1),
+  culture(2),
+  survivalKit(3);
+
+  const LessonType(this.value);
+
+  final int value;
+}
 
 class LessonGroup {
   final LessonGroupType code;

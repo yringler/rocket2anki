@@ -1,9 +1,11 @@
 import 'dart:io';
 import 'dart:async';
 
+import 'package:dart/config.dart';
 import 'package:dart/dashboard.dart';
 import 'package:dart/lesson.dart';
 import 'package:dart/rocketfetch.dart';
+import 'package:http/http.dart' as http;
 
 class LessonCards {
   List<String> cards;
@@ -57,7 +59,7 @@ Future<void> main() async {
   var dashboard = rocketData.dashboard;
   var entities = rocketData.entities;
 
-  var amount;
+  int? amount;
   var lessons = convertToList(entities.lessons);
   var promises = <Future<LessonCards?>>[];
 
@@ -67,7 +69,7 @@ Future<void> main() async {
         var response = await rocketFetchLesson(lessonId);
         if (response == null) continue;
         promises.add(addLesson(response.entities,
-            lessons.firstWhere((lesson) => lesson == lessonId)));
+            lessons.firstWhere((lesson) => lesson.id == lessonId)));
       }
     }
   }
@@ -80,13 +82,13 @@ Future<void> main() async {
       moduleIdToNumberMap);
   var survivalKit = getDeck(
       allLessons.lessons
-          .where((lesson) => lesson.meta.lessonTypeId == LessonType.SurvivalKit)
+          .where((lesson) => lesson.meta.lessonTypeId == LessonType.survivalKit)
           .toList(),
       'survival_kit',
       moduleIdToNumberMap);
   var withoutSurvival = getDeck(
       allLessons.lessons
-          .where((lesson) => lesson.meta.lessonTypeId != LessonType.SurvivalKit)
+          .where((lesson) => lesson.meta.lessonTypeId != LessonType.survivalKit)
           .toList(),
       'lessons',
       moduleIdToNumberMap);
@@ -135,7 +137,7 @@ DeckConfig getDeck(List<LessonCards> lessons, String deckName,
 
 void writeSelection(DeckConfig deck) {
   var header = '#separator:Pipe\n#html:true\n#deck column: 3\n';
-  File(join(deckPath, '${deck.deckName}.txt'))
+  File(join([deckPath, '${deck.deckName}.txt']))
       .writeAsStringSync(header + deck.cardsWithDeck);
 }
 
@@ -157,12 +159,11 @@ Future<LessonCards?> addLesson(
       if (!skipDownload) {
         var audioUrl = phrase.audioUrl;
         var audio = await retry('Fetching audio: $audioUrl', () async {
-          var response = await HttpClient().getUrl(Uri.parse(audioUrl));
-          var audio = await response.close();
-          return await audio.toBytes();
+          var response = await http.get(Uri.parse(audioUrl));
+          return response.bodyBytes;
         });
         if (audio != null) {
-          File(join('./audio', fileName)).writeAsBytesSync(audio);
+          File(join(['./audio', fileName])).writeAsBytesSync(audio);
         }
       }
     }
@@ -199,4 +200,8 @@ String slugify(String text) {
 // We use pipe as the seperator, so if it shows up in the card, we convert it to the HTML entity.
 String sanitize(String text) {
   return text.replaceAll('|', '&vert;');
+}
+
+String join(List<String> path) {
+  return path.join('/');
 }
