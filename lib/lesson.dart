@@ -85,7 +85,10 @@ class Phrase {
         .where((element) => element.writingSystemId.alwaysShow)
         .firstOrNull;
 
-    if (front == null || back == null) {
+    if (front == null ||
+        back == null ||
+        front.trim().isEmpty ||
+        back.trim().isEmpty) {
       return null;
     }
 
