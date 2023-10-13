@@ -7,7 +7,9 @@ enum LessonGroupType implements Comparable<LessonGroupType> {
   interactive("interactive-audio-course", 1),
   language("language-and-culture", 2),
   survivalKit("survival-kit", 3),
-  writing("writing", 4);
+  writing("writing", 4),
+  travelogue("travelogue", 5),
+  ebook("ebook-chapter", 6);
 
   const LessonGroupType(this.value, this.sort);
 
