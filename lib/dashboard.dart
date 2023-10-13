@@ -27,7 +27,9 @@ enum LessonType {
   language(1, 'Audio Lessons'),
   culture(2, 'Language & Culture'),
   survivalKit(3, 'Survival Kit'),
-  writing(6, "Writing");
+  writing(6, "Writing"),
+  chapters(47, "Book Chapters"),
+  travelogue(43, "Travelogue");
 
   const LessonType(this.value, this.name);
 

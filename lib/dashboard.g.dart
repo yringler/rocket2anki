@@ -50,6 +50,8 @@ const _$LessonTypeEnumMap = {
   LessonType.culture: 2,
   LessonType.survivalKit: 3,
   LessonType.writing: 6,
+  LessonType.chapters: 47,
+  LessonType.travelogue: 43,
 };
 
 DashboardEntity _$DashboardEntityFromJson(Map<String, dynamic> json) =>
