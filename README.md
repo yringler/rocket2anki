@@ -30,20 +30,22 @@ So it's very easy to review a lesson, and when you know a module, to review the 
 ## Usage
 
 ### Running it
-If you can't find an exe download, run `dart pub get` from the script folder, and then `dart ./bin/index.dart -e EMAIL -p PASSWORD`.
-(You'll have to install the [dart sdk][dart sdk download page] to run dart commands.)
+If you're on windows, you can download an exe from [github](https://github.com/yringler/rocket2anki/releases/latest).
+Run it with `rocket2anki.exe -e EMAIL -p PASSWORD`
 
-Note you'll have to get the product ID; I didn't bother automating that, because going through a single product takes enough time that modifying a config each time is fine. If you open up the dashboard, it's in the URL - eg, [spanish lesson one][spanish dashboard]
+If you don't pass in a correct email and password, the script will prompt you for your username and password.
+
+Or, you can run `dart pub get` from the script folder, and then `dart ./bin/index.dart -e EMAIL -p PASSWORD`.
+(You'll have to install the [dart sdk][dart sdk download page] to run dart commands.)
 
 ### Using the decks
 1. You need to have [anki][anki home] installed on your computer. 
-2. Copy over the audio from the audio folder (after you run the script) into ankis audio folder. On Windows, this will be something like `USERNAME\AppData\Roaming\Anki2\User 1\collection.media`, on apple `USERNAME/ANKI/User1`
-3. Open anki, and import the generated decks from `decks/allLANGUAGE.txt`
+2. Copy over the audio from the audio folder (after you run the script) into anki's audio folder. On Windows, this will be something like `USERNAME\AppData\Roaming\Anki2\User 1\collection.media`, on apple `USERNAME/ANKI/User1/collection.media`
+3. Open anki, and import the generated decks' text files from `decks/PRODUCTNAME.txt`
 
 ## Limitations
 1. This script is not able to download content you didn't pay for. (Yes, I checked. Purely for research purposes.) I mean, you can probably figure something out, but that's probably a federal crime.
 4. No UI. It would be cool to port it to dart, and add an optional desktop UI.
 
 [anki home]: https://apps.ankiweb.net/
-[spanish dashboard]: https://app.rocketlanguages.com/members/products/1/dashboard
 [dart sdk download page]: https://dart.dev/get-dart
