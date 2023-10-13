@@ -66,8 +66,12 @@ class Phrase {
       return null;
     }
 
+    final literal = literalString ?? '';
+    final englishSide =
+        literal.isEmpty ? english!.text : '${english!.text} ($literal)';
+
     return FlashCard(
-        english: _sanitize(english!.text),
+        english: _sanitize(englishSide),
         spanish: _sanitize(spanish!.text),
         audio: audioFileName);
   }
