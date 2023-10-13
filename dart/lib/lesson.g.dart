@@ -30,6 +30,10 @@ LessonEntity _$LessonEntityFromJson(Map<String, dynamic> json) => LessonEntity(
         (k, e) =>
             MapEntry(int.parse(k), Phrase.fromJson(e as Map<String, dynamic>)),
       ),
+      (json['lessons'] as Map<String, dynamic>).map(
+        (k, e) => MapEntry(
+            int.parse(k), DashboardLesson.fromJson(e as Map<String, dynamic>)),
+      ),
     );
 
 LessonRoot _$LessonRootFromJson(Map<String, dynamic> json) => LessonRoot(
