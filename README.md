@@ -47,7 +47,7 @@ See [the anki import docs][anki import]
 
 ## Limitations
 1. This script is not able to download content you didn't pay for. (Yes, I checked. Purely for research purposes.) I mean, you can probably figure something out, but that's probably a federal crime.
-4. No UI. It would be cool to port it to dart, and add an optional desktop UI.
+4. No gui UI. It does have a command line UI, though.
 
 [anki home]: https://apps.ankiweb.net/
 [dart sdk download page]: https://dart.dev/get-dart
