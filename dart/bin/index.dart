@@ -1,11 +1,12 @@
 import 'dart:io';
 import 'dart:async';
 
+import 'dart:typed_data';
 import 'package:dart/config.dart';
 import 'package:dart/dashboard.dart';
 import 'package:dart/lesson.dart';
 import 'package:dart/rocketfetch.dart';
-import 'package:http/http.dart' as http;
+import 'package:dart/utils.dart';
 
 class LessonCards {
   List<String> cards;
@@ -77,7 +78,7 @@ Future<void> main() async {
   var moduleIdToNumberMap = Map<int, double>.fromEntries(
       dashboard.modules.map((module) => MapEntry(module.id, module.number)));
   var allLessons = getDeck(
-      promises.map((lesson) => lesson as LessonCards).toList(),
+      (await Future.wait(promises)).whereType<LessonCards>().toList(),
       'all',
       moduleIdToNumberMap);
   var survivalKit = getDeck(
@@ -145,27 +146,14 @@ Future<LessonCards?> addLesson(
     LessonEntity lesson, DashboardLesson meta) async {
   var phrases = convertToList(lesson.phrases);
   var cardPromises = phrases.map((phrase) async {
-    var english = phrase.strings
-        .where((english) => english.writingSystemId == WritingSystemId.english)
-        .firstOrNull;
-    var spanish = phrase.strings
-        .where((english) => english.writingSystemId == WritingSystemId.spanish)
-        .firstOrNull;
-    String fileName = '';
+    final english = phrase.ofWritingSystem(WritingSystemId.english);
+    final spanish = phrase.ofWritingSystem(WritingSystemId.spanish);
 
-    if (phrase.audioUrl.isNotEmpty) {
-      var url = Uri.parse(phrase.audioUrl);
-      fileName = slugify(url.pathSegments.last);
-      var audioUrl = phrase.audioUrl;
-      var audio = await retry('Fetching audio: $audioUrl', () async {
-        var response = await http.get(Uri.parse(audioUrl));
-        return response.bodyBytes;
-      });
-      if (audio != null) {
-        final audioFile = File(join(['./audio', fileName]));
-        if (!audioFile.existsSync()) {
-          audioFile.writeAsBytesSync(audio);
-        }
+    if (phrase.hasAudio) {
+      final audioFile = File(join(['./audio', phrase.audioFileName]));
+
+      if (!audioFile.existsSync()) {
+        await phrase.downloadMedia(rootPath: './audio');
       }
     }
     if ((english?.text.isEmpty ?? true) || (spanish?.text.isEmpty ?? true)) {
@@ -175,7 +163,7 @@ Future<LessonCards?> addLesson(
     return FlashCard(
         english: sanitize(english!.text),
         spanish: sanitize(spanish!.text),
-        audio: fileName);
+        audio: phrase.audioFileName);
   });
 
   var cards = (await Future.wait(cardPromises))
@@ -188,21 +176,7 @@ Future<LessonCards?> addLesson(
   return LessonCards(cards, meta);
 }
 
-String slugify(String text) {
-  return text
-      .toLowerCase()
-      .replaceAll(RegExp(r'\s+'), '-')
-      .replaceAll(RegExp(r'[^\w\-.]+'), '')
-      .replaceAll(RegExp(r'\-\-+'), '-')
-      .replaceAll(RegExp(r'^-+'), '')
-      .replaceAll(RegExp(r'-+$'), '');
-}
-
 // We use pipe as the seperator, so if it shows up in the card, we convert it to the HTML entity.
 String sanitize(String text) {
   return text.replaceAll('|', '&vert;');
-}
-
-String join(List<String> path) {
-  return path.join('/');
 }

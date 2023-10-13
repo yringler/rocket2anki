@@ -24,7 +24,7 @@ enum LessonType {
   final int value;
 }
 
-@JsonSerializable(fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
 class LessonGroup {
   final LessonGroupType code;
   final List<int> lessons;
@@ -35,7 +35,7 @@ class LessonGroup {
       _$LessonGroupFromJson(json);
 }
 
-@JsonSerializable(fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
 class CourseModule {
   final int id;
   final int courseId;
@@ -47,7 +47,7 @@ class CourseModule {
       _$CourseModuleFromJson(json);
 }
 
-@JsonSerializable(fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
 class Dashboard {
   final List<CourseModule> modules;
 
@@ -56,7 +56,7 @@ class Dashboard {
       _$DashboardFromJson(json);
 }
 
-@JsonSerializable(fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
 class DashboardLesson {
   final int id;
   final int moduleId;
@@ -70,7 +70,7 @@ class DashboardLesson {
       _$DashboardLessonFromJson(json);
 }
 
-@JsonSerializable(fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
 class DashboardEntity {
   final Map<int, DashboardLesson> lessons;
 
@@ -79,7 +79,7 @@ class DashboardEntity {
       _$DashboardEntityFromJson(json);
 }
 
-@JsonSerializable(fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
 class DashboardRoot {
   final Dashboard dashboard;
   final DashboardEntity entities;
