@@ -1,4 +1,11 @@
-enum WritingSystemId { spanish, english }
+enum WritingSystemId {
+  spanish(5),
+  english(1);
+
+  const WritingSystemId(this.value);
+
+  final int value;
+}
 
 class PhraseString {
   final int id;
