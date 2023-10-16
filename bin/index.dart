@@ -48,12 +48,6 @@ Future<void> main(List<String> args) async {
     }
   }
 
-  final spinner = Spinner(
-      icon: '🏆',
-      rightPrompt: (done) => done
-          ? 'Deck import file created and audio downloaded!'
-          : 'Please wait, downloading content').interact();
-
   final products = await RocketFetcher.rocketFetchUrl(
       'https://app.rocketlanguages.com/api/v2/courses',
       auth,
@@ -61,30 +55,39 @@ Future<void> main(List<String> args) async {
 
   assert(products != null);
 
+  final multiSpinner = MultiSpinner();
+
   final decks = (await Future.wait(products!.userCourses
           .map((course) => course.productLevels
-              .where((element) => !element.isTrial)
-              .map((level) =>
-                  getDecksForProduct(auth!, course: course, level: level)))
+                  .where((element) => !element.isTrial)
+                  .map((level) async {
+                final name = '${course.fullName} - ${level.label}';
+                final spinner = multiSpinner.add(Spinner(
+                    icon: '🏆',
+                    rightPrompt: (done) =>
+                        done ? 'Done: $name!' : 'Downloading for: $name'));
+                try {
+                  return await getDecksForProduct(auth!,
+                      course: course, level: level);
+                } finally {
+                  spinner.done();
+                }
+              }))
           .expand((x) => x)
           .toList()))
       .whereNotNull()
+      // Excludes audio book
+      .where((deck) => deck.cardsWithDeck.split('\n').length > 100)
       .toList();
 
   for (var deck in decks) {
     writeSelection(deck);
   }
 
-  final realDecks = decks
-      .where((deck) => deck.cardsWithDeck.split('\n').length > 100)
-      .toList();
-
   writeSelection(DeckConfig(
-      cardsWithDeck: realDecks.map((e) => e.cardsWithDeck).join('\n'),
-      lessons: realDecks.expand((e) => e.lessons).toList(),
+      cardsWithDeck: decks.map((e) => e.cardsWithDeck).join('\n'),
+      lessons: decks.expand((e) => e.lessons).toList(),
       deckName: 'All Courses'));
-
-  spinner.done();
 }
 
 Future<DeckConfig?> getDecksForProduct(String auth,
