@@ -99,8 +99,9 @@ class Phrase {
         .where((element) => element.writingSystemId.alwaysShow)
         .firstOrNull;
     final notations = backString?.notations
-        .map((e) => lessonEntity.notations[e.notationId]!.tooltipLabel)
-        .firstOrNull;
+            .map((e) => lessonEntity.notations[e.notationId]!.tooltipLabel)
+            .join(' - ') ??
+        '';
 
     if (front == null ||
         back == null ||
@@ -112,8 +113,7 @@ class Phrase {
     final literal = literalString ?? '';
     final englishSide = literal.isEmpty ? front : '$front ($literal)';
     final alwaysShow = both == null ? '' : ' - ${both.text}';
-    final notationString =
-        notations == null || notations.isEmpty ? '' : ' ($notations)';
+    final notationString = notations.isEmpty ? '' : ' ($notations)';
 
     return FlashCard(
         primary: _sanitize('$englishSide$notationString$alwaysShow'),
