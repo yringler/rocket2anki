@@ -55,24 +55,13 @@ Future<void> main(List<String> args) async {
 
   assert(products != null);
 
-  final multiSpinner = MultiSpinner();
+  final multiProgress = MultiProgress();
 
   final decks = (await Future.wait(products!.userCourses
           .map((course) => course.productLevels
-                  .where((element) => !element.isTrial)
-                  .map((level) async {
-                final name = '${course.fullName} - ${level.label}';
-                final spinner = multiSpinner.add(Spinner(
-                    icon: '🏆',
-                    rightPrompt: (done) =>
-                        done ? 'Done: $name!' : 'Downloading for: $name'));
-                try {
-                  return await getDecksForProduct(auth!,
-                      course: course, level: level);
-                } finally {
-                  spinner.done();
-                }
-              }))
+              .where((element) => !element.isTrial)
+              .map((level) => getDecksForProduct(auth!,
+                  course: course, level: level, multiProgress: multiProgress)))
           .expand((x) => x)
           .toList()))
       .whereNotNull()
@@ -91,7 +80,9 @@ Future<void> main(List<String> args) async {
 }
 
 Future<DeckConfig?> getDecksForProduct(String auth,
-    {required Course course, required ProductLevel level}) async {
+    {required Course course,
+    required ProductLevel level,
+    required MultiProgress multiProgress}) async {
   final rocketFetcher = RocketFetcher(auth: auth, productId: level.productId);
 
   var rocketData = await rocketFetcher.rocketFetchHome();
@@ -105,22 +96,49 @@ Future<DeckConfig?> getDecksForProduct(String auth,
     return null;
   }
 
-  final fullLessonsData = (await Future.wait(dashboard.modules
-          .expand((module) => module.groupedLessons)
-          .expand((lessonGroup) => lessonGroup.lessons)
-          .map(rocketFetcher.rocketFetchLesson)
-          .toList()))
-      .whereType<LessonRoot>()
+  final lessonsToGet = dashboard.modules
+      .expand((module) => module.groupedLessons)
+      .expand((lessonGroup) => lessonGroup.lessons)
       .toList();
+
+  final label = '${course.fullName} - ${level.label}';
+  const labelWidth = 55;
+
+  final metaProgress = multiProgress.add(Progress(
+      length: lessonsToGet.length,
+      leftPrompt: (current) => '$label - meta data: '.padRight(labelWidth)));
+
+  final fullLessonsData = (await Future.wait(lessonsToGet.map((lesson) async {
+    try {
+      return await rocketFetcher.rocketFetchLesson(lesson);
+    } finally {
+      metaProgress.increase(1);
+    }
+  }).toList()))
+      .whereNotNull()
+      .toList();
+
+  metaProgress.done();
+
+  const rootPath = './audio';
 
   final audioDownloadBatches = fullLessonsData
       .expand((e) => e.entities.phrases.values)
-      .where((element) => element.audioUrl.isNotEmpty)
-      .toList()
-      .slices(10);
+      .where((element) => element.isMissingMedia(rootPath: rootPath))
+      .slices(10)
+      .toList();
 
-  for (var batch in audioDownloadBatches) {
-    await Future.wait(batch.map((e) => e.downloadMedia(rootPath: './audio')));
+  if (audioDownloadBatches.expand((e) => e).isNotEmpty) {
+    final audioProgress = multiProgress.add(Progress(
+        length: audioDownloadBatches.length,
+        leftPrompt: (progress) => '$label - audio: '.padRight(labelWidth)));
+
+    for (var batch in audioDownloadBatches) {
+      await Future.wait(batch.map((e) => e.downloadMedia(rootPath: rootPath)));
+      audioProgress.increase(1);
+    }
+
+    audioProgress.done();
   }
 
   final allDecks = fullLessonsData

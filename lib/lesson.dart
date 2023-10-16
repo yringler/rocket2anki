@@ -122,16 +122,16 @@ class Phrase {
         phrase: this);
   }
 
+  bool isMissingMedia({required String rootPath}) {
+    return _hasAudio && !File(join([rootPath, audioFileName])).existsSync();
+  }
+
   Future<void> downloadMedia({required String rootPath}) async {
-    if (!_hasAudio) {
+    if (!isMissingMedia(rootPath: rootPath)) {
       return;
     }
 
     final audioFile = File(join([rootPath, audioFileName]));
-
-    if (audioFile.existsSync()) {
-      return;
-    }
 
     var audio = await retry('Fetching audio: $audioUrl', () async {
       var response = await http.get(Uri.parse(audioUrl));
