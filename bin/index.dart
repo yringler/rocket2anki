@@ -75,6 +75,15 @@ Future<void> main(List<String> args) async {
     writeSelection(deck);
   }
 
+  final realDecks = decks
+      .where((deck) => deck.cardsWithDeck.split('\n').length > 100)
+      .toList();
+
+  writeSelection(DeckConfig(
+      cardsWithDeck: realDecks.map((e) => e.cardsWithDeck).join('\n'),
+      lessons: realDecks.expand((e) => e.lessons).toList(),
+      deckName: 'All Courses'));
+
   spinner.done();
 }
 
@@ -144,7 +153,7 @@ void writeSelection(DeckConfig deck) {
 FlashCardDeck getLessonDeck(LessonEntity lesson, CourseModule module) {
   var phrases = convertToList(lesson.phrases);
   var cards = phrases
-      .map((phrase) => phrase.toCard())
+      .map((phrase) => phrase.toCard(lesson))
       .toList()
       .whereType<FlashCard>()
       .map((card) {

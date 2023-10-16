@@ -30,12 +30,24 @@ enum WritingSystemId {
 }
 
 @JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
+class PhraseNotationReference {
+  final int id;
+  final int notationId;
+
+  PhraseNotationReference({required this.id, required this.notationId});
+
+  factory PhraseNotationReference.fromJson(Map<String, dynamic> json) =>
+      _$PhraseNotationReferenceFromJson(json);
+}
+
+@JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
 class PhraseString {
   final int id;
   final String text;
   final WritingSystemId writingSystemId;
+  final List<PhraseNotationReference> notations;
 
-  PhraseString(this.id, this.text, this.writingSystemId);
+  PhraseString(this.id, this.text, this.writingSystemId, this.notations);
 
   factory PhraseString.fromJson(Map<String, dynamic> json) =>
       _$PhraseStringFromJson(json);
@@ -70,19 +82,24 @@ class Phrase {
         .firstOrNull;
   }
 
-  FlashCard? toCard() {
+  FlashCard? toCard(LessonEntity lessonEntity) {
     final front = strings
         .where((element) => element.writingSystemId.primary)
         .firstOrNull
         ?.text;
-    final back = strings
+
+    final backString = strings
         .where((element) =>
             !element.writingSystemId.primary &&
             !element.writingSystemId.alwaysShow)
-        .firstOrNull
-        ?.text;
+        .firstOrNull;
+    final back = backString?.text;
+
     final both = strings
         .where((element) => element.writingSystemId.alwaysShow)
+        .firstOrNull;
+    final notations = backString?.notations
+        .map((e) => lessonEntity.notations[e.notationId]!.tooltipLabel)
         .firstOrNull;
 
     if (front == null ||
@@ -95,9 +112,11 @@ class Phrase {
     final literal = literalString ?? '';
     final englishSide = literal.isEmpty ? front : '$front ($literal)';
     final alwaysShow = both == null ? '' : ' - ${both.text}';
+    final notationString =
+        notations == null || notations.isEmpty ? '' : ' ($notations)';
 
     return FlashCard(
-        primary: _sanitize(englishSide + alwaysShow),
+        primary: _sanitize('$englishSide$notationString$alwaysShow'),
         back: _sanitize(back + alwaysShow),
         audio: audioFileName,
         phrase: this);
@@ -133,13 +152,26 @@ class Phrase {
 }
 
 @JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
+class PhraseNotationEntity {
+  final int id;
+  final String tooltipLabel;
+  final String tooltipDescription;
+
+  PhraseNotationEntity(this.id, this.tooltipLabel, this.tooltipDescription);
+
+  factory PhraseNotationEntity.fromJson(Map<String, dynamic> json) =>
+      _$PhraseNotationEntityFromJson(json);
+}
+
+@JsonSerializable(fieldRename: FieldRename.snake, createToJson: false)
 class LessonEntity {
   final Map<int, Phrase> phrases;
   final Map<int, DashboardLesson> lessons;
+  final Map<int, PhraseNotationEntity> notations;
 
   DashboardLesson get lesson => lessons.values.single;
 
-  LessonEntity(this.phrases, this.lessons) {
+  LessonEntity(this.phrases, this.lessons, this.notations) {
     assert(lessons.length == 1,
         'lesson contains multiple lessons: ${lessons.values.map((e) => e.name).join('\n')}');
   }

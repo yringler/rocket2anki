@@ -6,10 +6,21 @@ part of 'lesson.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
+PhraseNotationReference _$PhraseNotationReferenceFromJson(
+        Map<String, dynamic> json) =>
+    PhraseNotationReference(
+      id: json['id'] as int,
+      notationId: json['notation_id'] as int,
+    );
+
 PhraseString _$PhraseStringFromJson(Map<String, dynamic> json) => PhraseString(
       json['id'] as int,
       json['text'] as String,
       $enumDecode(_$WritingSystemIdEnumMap, json['writing_system_id']),
+      (json['notations'] as List<dynamic>)
+          .map((e) =>
+              PhraseNotationReference.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
 
 const _$WritingSystemIdEnumMap = {
@@ -32,6 +43,14 @@ Phrase _$PhraseFromJson(Map<String, dynamic> json) => Phrase(
       json['id'] as int,
     );
 
+PhraseNotationEntity _$PhraseNotationEntityFromJson(
+        Map<String, dynamic> json) =>
+    PhraseNotationEntity(
+      json['id'] as int,
+      json['tooltip_label'] as String,
+      json['tooltip_description'] as String,
+    );
+
 LessonEntity _$LessonEntityFromJson(Map<String, dynamic> json) => LessonEntity(
       (json['phrases'] as Map<String, dynamic>).map(
         (k, e) =>
@@ -40,6 +59,10 @@ LessonEntity _$LessonEntityFromJson(Map<String, dynamic> json) => LessonEntity(
       (json['lessons'] as Map<String, dynamic>).map(
         (k, e) => MapEntry(
             int.parse(k), DashboardLesson.fromJson(e as Map<String, dynamic>)),
+      ),
+      (json['notations'] as Map<String, dynamic>).map(
+        (k, e) => MapEntry(int.parse(k),
+            PhraseNotationEntity.fromJson(e as Map<String, dynamic>)),
       ),
     );
 
