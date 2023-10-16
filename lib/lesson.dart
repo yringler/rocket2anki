@@ -139,9 +139,7 @@ class Phrase {
     });
 
     if (audio != null) {
-      if (!audioFile.existsSync()) {
-        audioFile.writeAsBytesSync(audio);
-      }
+      audioFile.writeAsBytesSync(audio);
     }
   }
 
