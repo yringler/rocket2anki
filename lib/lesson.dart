@@ -84,16 +84,17 @@ class Phrase {
 
   FlashCard? toCard(LessonEntity lessonEntity) {
     final front = strings
-        .where((element) => element.writingSystemId.primary)
-        .firstOrNull
-        ?.text;
+            .where((element) => element.writingSystemId.primary)
+            .firstOrNull
+            ?.text ??
+        '';
 
     final backString = strings
         .where((element) =>
             !element.writingSystemId.primary &&
             !element.writingSystemId.alwaysShow)
         .firstOrNull;
-    final back = backString?.text;
+    final back = backString?.text ?? '';
 
     final both = strings
         .where((element) => element.writingSystemId.alwaysShow)
@@ -103,10 +104,7 @@ class Phrase {
             .join(' - ') ??
         '';
 
-    if (front == null ||
-        back == null ||
-        front.trim().isEmpty ||
-        back.trim().isEmpty) {
+    if (front.trim().isEmpty || back.trim().isEmpty) {
       return null;
     }
 
