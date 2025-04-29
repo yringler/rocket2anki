@@ -9,12 +9,12 @@ part of 'lesson.dart';
 PhraseNotationReference _$PhraseNotationReferenceFromJson(
         Map<String, dynamic> json) =>
     PhraseNotationReference(
-      id: json['id'] as int,
-      notationId: json['notation_id'] as int,
+      id: (json['id'] as num).toInt(),
+      notationId: (json['notation_id'] as num).toInt(),
     );
 
 PhraseString _$PhraseStringFromJson(Map<String, dynamic> json) => PhraseString(
-      json['id'] as int,
+      (json['id'] as num).toInt(),
       json['text'] as String,
       $enumDecode(_$WritingSystemIdEnumMap, json['writing_system_id']),
       (json['notations'] as List<dynamic>)
@@ -40,13 +40,13 @@ Phrase _$PhraseFromJson(Map<String, dynamic> json) => Phrase(
           .map((e) => PhraseString.fromJson(e as Map<String, dynamic>))
           .toList(),
       json['literal_string'] as String?,
-      json['id'] as int,
+      (json['id'] as num).toInt(),
     );
 
 PhraseNotationEntity _$PhraseNotationEntityFromJson(
         Map<String, dynamic> json) =>
     PhraseNotationEntity(
-      json['id'] as int,
+      (json['id'] as num).toInt(),
       json['tooltip_label'] as String,
       json['tooltip_description'] as String,
     );

@@ -28,9 +28,12 @@ Future<void> main(List<String> args) async {
   final argsParser = ArgParser()
     ..addOption('email', abbr: 'e')
     ..addOption('password', abbr: 'p')
+    ..addFlag('skip-audio',
+        abbr: 's', help: "Only create cards, don't download audio")
     ..addFlag('help', abbr: 'h');
 
   final parsedArgs = argsParser.parse(args);
+  final skipAudio = parsedArgs.flag('skip-audio');
 
   if (parsedArgs.wasParsed("help")) {
     print(argsParser.usage);
@@ -61,7 +64,10 @@ Future<void> main(List<String> args) async {
           .map((course) => course.productLevels
               .where((element) => !element.isTrial)
               .map((level) => getDecksForProduct(auth!,
-                  course: course, level: level, multiProgress: multiProgress)))
+                  course: course,
+                  level: level,
+                  multiProgress: multiProgress,
+                  skipAudio: skipAudio)))
           .expand((x) => x)
           .toList()))
       .whereNotNull()
@@ -82,8 +88,17 @@ Future<void> main(List<String> args) async {
 Future<DeckConfig?> getDecksForProduct(String auth,
     {required Course course,
     required ProductLevel level,
-    required MultiProgress multiProgress}) async {
-  final rocketFetcher = RocketFetcher(auth: auth, productId: level.productId);
+    required MultiProgress multiProgress,
+    bool skipAudio = false}) async {
+  final productId = level.productId;
+
+  if (productId == null) {
+    print(
+        'No product ID - Label: ${level.label}. Course ID - ${level.courseId}');
+    return null;
+  }
+
+  final rocketFetcher = RocketFetcher(auth: auth, productId: productId);
 
   var rocketData = await rocketFetcher.rocketFetchHome();
 
@@ -128,7 +143,7 @@ Future<DeckConfig?> getDecksForProduct(String auth,
       .slices(10)
       .toList();
 
-  if (audioDownloadBatches.expand((e) => e).isNotEmpty) {
+  if (!skipAudio && audioDownloadBatches.expand((e) => e).isNotEmpty) {
     final audioProgress = multiProgress.add(Progress(
         length: audioDownloadBatches.length,
         leftPrompt: (progress) => '$label - audio: '.padRight(labelWidth)));
