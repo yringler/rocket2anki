@@ -7,15 +7,15 @@ part of 'courses.dart';
 // **************************************************************************
 
 ProductLevel _$ProductLevelFromJson(Map<String, dynamic> json) => ProductLevel(
-      json['id'] as int,
-      json['course_id'] as int,
+      (json['id'] as num).toInt(),
+      (json['course_id'] as num).toInt(),
       json['label'] as String,
       json['is_trial'] as bool,
-      json['product_id'] as int,
+      (json['product_id'] as num?)?.toInt(),
     );
 
 Course _$CourseFromJson(Map<String, dynamic> json) => Course(
-      json['id'] as int,
+      (json['id'] as num).toInt(),
       json['name'] as String,
       json['dialect'] as String?,
       (json['product_levels'] as List<dynamic>)

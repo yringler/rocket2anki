@@ -8,7 +8,7 @@ class ProductLevel {
   final int courseId;
   final String label;
   final bool isTrial;
-  final int productId;
+  final int? productId;
 
   ProductLevel(
       this.id, this.courseId, this.label, this.isTrial, this.productId);

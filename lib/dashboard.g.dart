@@ -8,7 +8,9 @@ part of 'dashboard.dart';
 
 LessonGroup _$LessonGroupFromJson(Map<String, dynamic> json) => LessonGroup(
       $enumDecode(_$LessonGroupTypeEnumMap, json['code']),
-      (json['lessons'] as List<dynamic>).map((e) => e as int).toList(),
+      (json['lessons'] as List<dynamic>)
+          .map((e) => (e as num).toInt())
+          .toList(),
     );
 
 const _$LessonGroupTypeEnumMap = {
@@ -21,8 +23,8 @@ const _$LessonGroupTypeEnumMap = {
 };
 
 CourseModule _$CourseModuleFromJson(Map<String, dynamic> json) => CourseModule(
-      json['id'] as int,
-      json['course_id'] as int,
+      (json['id'] as num).toInt(),
+      (json['course_id'] as num).toInt(),
       (json['number'] as num).toDouble(),
       (json['grouped_lessons'] as List<dynamic>)
           .map((e) => LessonGroup.fromJson(e as Map<String, dynamic>))
@@ -37,8 +39,8 @@ Dashboard _$DashboardFromJson(Map<String, dynamic> json) => Dashboard(
 
 DashboardLesson _$DashboardLessonFromJson(Map<String, dynamic> json) =>
     DashboardLesson(
-      json['id'] as int,
-      json['module_id'] as int,
+      (json['id'] as num).toInt(),
+      (json['module_id'] as num).toInt(),
       $enumDecode(_$LessonTypeEnumMap, json['lesson_type_id']),
       json['name'] as String,
       json['slug'] as String?,
