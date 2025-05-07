@@ -24,14 +24,24 @@ PhraseString _$PhraseStringFromJson(Map<String, dynamic> json) => PhraseString(
     );
 
 const _$WritingSystemIdEnumMap = {
-  WritingSystemId.spanish: 5,
   WritingSystemId.english: 1,
-  WritingSystemId.chineseFigures: 9,
-  WritingSystemId.pinyin: 8,
   WritingSystemId.japaneseFigures: 3,
   WritingSystemId.japanesePinyin: 4,
+  WritingSystemId.spanish: 5,
+  WritingSystemId.arabicFigures: 6,
+  WritingSystemId.arabic: 7,
+  WritingSystemId.pinyin: 8,
+  WritingSystemId.chineseFigures: 9,
+  WritingSystemId.french: 10,
+  WritingSystemId.german: 11,
+  WritingSystemId.hindiFigures: 12,
+  WritingSystemId.hindi: 13,
+  WritingSystemId.italian: 14,
   WritingSystemId.koreanFigures: 15,
   WritingSystemId.koreanPinyin: 16,
+  WritingSystemId.portuguese: 17,
+  WritingSystemId.russian: 19,
+  WritingSystemId.russianFigures: 20,
 };
 
 Phrase _$PhraseFromJson(Map<String, dynamic> json) => Phrase(
