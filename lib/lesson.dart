@@ -111,7 +111,8 @@ class Phrase {
         .where((element) => element.writingSystemId.alwaysShow)
         .firstOrNull;
     final notations = backString?.notations
-            .map((e) => lessonEntity.notations[e.notationId]!.tooltipLabel)
+            .map((e) => lessonEntity.notations[e.notationId]?.tooltipLabel)
+            .nonNulls
             .join(' - ') ??
         '';
 
