@@ -50,7 +50,7 @@ See [the anki import docs][anki import]
   - On Windows, this will be something like `USERNAME\AppData\Roaming\Anki2\User 1\collection.media`,
   - on apple `USERNAME/ANKI/User1/collection.media`
   - on linux: `cp audio/* "~/.var/app/net.ankiweb.Anki/data/Anki2/User 1/collection.media/"`
-4. Open anki, and import the generated decks' text files from `decks/PRODUCTNAME.txt`
+3. Open anki, and import the generated decks' text files from `decks/PRODUCTNAME.txt`
 
 ## Limitations
 1. This script is not able to download content you didn't pay for. (Yes, I checked. Purely for research purposes.) I mean, you can probably figure something out, but that's probably a federal crime.
