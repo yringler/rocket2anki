@@ -49,7 +49,7 @@ See [the anki import docs][anki import]
 2. Copy over the audio from the audio folder (after you run the script) into anki's audio folder.
    - On Windows, this will be something like `USERNAME\AppData\Roaming\Anki2\User 1\collection.media`
    - on Apple: `USERNAME/ANKI/User1/collection.media`
-   - on Linux: `cp audio/* "~/.var/app/net.ankiweb.Anki/data/Anki2/User 1/collection.media/"`
+   - on Linux (flatpak): `cp audio/* "~/.var/app/net.ankiweb.Anki/data/Anki2/User 1/collection.media/"`
 3. Open anki, and import the generated decks' text files from `decks/PRODUCTNAME.txt`
 
 ## Limitations
