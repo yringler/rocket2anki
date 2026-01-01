@@ -20,6 +20,7 @@ const _$LessonGroupTypeEnumMap = {
   LessonGroupType.writing: 'writing',
   LessonGroupType.travelogue: 'travelogue',
   LessonGroupType.ebook: 'ebook-chapter',
+  LessonGroupType.playThePart: 'play-the-part',
 };
 
 CourseModule _$CourseModuleFromJson(Map<String, dynamic> json) => CourseModule(
@@ -54,6 +55,7 @@ const _$LessonTypeEnumMap = {
   LessonType.writing: 6,
   LessonType.chapters: 47,
   LessonType.travelogue: 43,
+  LessonType.playThePart: 49,
 };
 
 DashboardEntity _$DashboardEntityFromJson(Map<String, dynamic> json) =>
