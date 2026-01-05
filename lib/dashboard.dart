@@ -9,7 +9,8 @@ enum LessonGroupType implements Comparable<LessonGroupType> {
   survivalKit("survival-kit", 3),
   writing("writing", 4),
   travelogue("travelogue", 5),
-  ebook("ebook-chapter", 6);
+  ebook("ebook-chapter", 6),
+  playThePart("play-the-part", 7);
 
   const LessonGroupType(this.value, this.sort);
 
@@ -29,7 +30,8 @@ enum LessonType {
   survivalKit(3, 'Survival Kit'),
   writing(6, "Writing"),
   chapters(47, "Book Chapters"),
-  travelogue(43, "Travelogue");
+  travelogue(43, "Travelogue"),
+  playThePart(49, "Play The Part");
 
   const LessonType(this.value, this.name);
 
