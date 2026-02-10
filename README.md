@@ -42,6 +42,16 @@ If you don't pass in a correct email and password, the script will prompt you fo
 Or, you can run `dart pub get` from the script folder, and then `dart ./bin/index.dart -e EMAIL -p PASSWORD`.
 (You'll have to install the [dart sdk][dart sdk download page] to run dart commands.)
 
+### Audio Normalization (optional)
+I noticed, at least in the French course, that the audio in some lessons was much quieter than others, and it bothered me. I fixed it using [mp3gain](https://mp3gain.sourceforge.net/):
+
+```
+cp -a audio audio.mp3gain
+mp3gain -r -k -s r audio.mp3gain/*
+```
+
+Use the normalized `audio.mp3gain` folder in the next step rather than the `audio` folder if you do this.
+
 ### Using the decks
 See [the anki import docs][anki import]
 
