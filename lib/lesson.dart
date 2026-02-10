@@ -11,6 +11,7 @@ part 'lesson.g.dart';
 @JsonEnum(valueField: 'value')
 enum WritingSystemId {
   english(1, primary: true),
+  japanesejapaneseHiragana(2, alwaysShow: true),
   japaneseFigures(3, alwaysShow: true),
   japanesePinyin(4),
 

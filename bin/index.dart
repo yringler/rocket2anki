@@ -126,11 +126,15 @@ Future<DeckConfig?> getDecksForProduct(String auth,
   final fullLessonsData = (await Future.wait(lessonsToGet.map((lesson) async {
     try {
       return await rocketFetcher.rocketFetchLesson(lesson);
+    } catch (e) {
+      print(
+          'An error occured. If things aren\'t working, this would be useful context to provide to a a github issue');
+      print(e);
     } finally {
       metaProgress.increase(1);
     }
   }).toList()))
-      .whereNotNull()
+      .nonNulls
       .toList();
 
   metaProgress.done();

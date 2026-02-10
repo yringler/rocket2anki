@@ -25,6 +25,7 @@ PhraseString _$PhraseStringFromJson(Map<String, dynamic> json) => PhraseString(
 
 const _$WritingSystemIdEnumMap = {
   WritingSystemId.english: 1,
+  WritingSystemId.japanesejapaneseHiragana: 2,
   WritingSystemId.japaneseFigures: 3,
   WritingSystemId.japanesePinyin: 4,
   WritingSystemId.spanish: 5,
